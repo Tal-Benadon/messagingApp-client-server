@@ -1,0 +1,25 @@
+.buttonContainer {
+    background-color: var(--button-color);
+    color: var(--button-color-text);
+    display: flex;
+    /* width: fit-content; */
+    height: 45px;
+    width: 220px;
+    gap: 1rem;
+    padding: 0.8rem;
+    border-radius: 0.8rem;
+    font-weight: var(--button-font-weight);
+    /* padding-inline-end: 50px; */
+    font-size: var(--title-font-size);
+    align-items: center;
+    letter-spacing: 1px;
+    justify-content: flex-start;
+    /* justify-content: center; */
+
+}
+
+.icon {
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+}

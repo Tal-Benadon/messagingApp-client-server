@@ -1,0 +1,31 @@
+.dropDownMenu {
+    position: absolute;
+    right: 0px;
+    width: fit-content;
+    background-color: white;
+    /* width: 200px; */
+    padding: 0.2rem;
+    /* z-index: 100; */
+    /* top: 80px; */
+}
+
+button {
+    position: relative;
+}
+
+li {
+    font-size: 1rem;
+    list-style-type: none;
+    -webkit-box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.75);
+    padding: 0.6rem;
+    white-space: nowrap;
+    border-radius: 7px;
+}
+
+
+.dotsSyle {
+    font-size: 1.4rem;
+    color: #D6DCE4;
+}

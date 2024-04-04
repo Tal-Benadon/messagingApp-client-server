@@ -1,0 +1,10 @@
+.iconBtn {
+    font-size: 1.4rem;
+    color: #D6DCE4;
+    transition: color 300ms ease;
+}
+
+.iconBtn:hover {
+    cursor: pointer;
+    color: var(--button-color);
+}

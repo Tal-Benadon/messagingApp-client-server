@@ -1,0 +1,44 @@
+.tabIconBody {
+    position: relative;
+    color: #A2AAB4;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    transition: all 400ms ease;
+
+}
+
+.active {
+    background-color: var(--read-msg-color);
+    color: var(--button-color);
+
+}
+
+
+.tabIconBody::after {
+    content: '';
+    position: absolute;
+    right: -1.2rem;
+    top: 0;
+    height: 100%;
+    width: 4.5px;
+    background-color: var(--button-color);
+    opacity: 0;
+    transition: opacity 400ms ease;
+    cursor: default;
+    border-radius: 7px;
+}
+
+.tabIconBody.active::after {
+    opacity: 1;
+}
+
+.tabIcon {
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

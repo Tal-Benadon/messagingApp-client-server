@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght,YOPQ@100..900,40..300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Kumbh Sans, sans-serif;
+}
+
+button {
+  border: none;
+  outline: none;
+  background: none;
+}
+
+/* html {
+  background-color: beige;
+} */
+
+:root {
+  --button-color: #00A389;
+  --button-color-text: white;
+  --read-msg-color: #F4F6F8;
+  --icon-size: 24px;
+  --title-font-size: 0.95rem;
+  --title-font-weight: 600;
+  --button-font-weight: 500;
+}
+
+.avatarImg {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+}
+
+.appConfinement {
+  /* background-color: blanchedalmond */
+}
+
+@media (width > 1919px) {
+  .appConfinement {
+    height: 100vh;
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+  }
+
+  .appConfinement>div {
+    /* max-width: 1900px; */
+    /* height: 900px; */
+    /* padding: 4rem; */
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #00A389;
+  border-radius: 10px
+    /* dark grey, or choose your color */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00a388cb;
+  /* darker grey or any hover color */
+}
+
+.regLogPageContainer {
+  background-color: #E4E8EE;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

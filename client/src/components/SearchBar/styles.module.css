@@ -1,0 +1,33 @@
+.searchBarContainer {
+    position: relative;
+    width: 100%;
+}
+
+.input::placeholder {
+    color: #8191A9;
+}
+
+.input {
+    outline: none;
+    border: none;
+    background-color: #E4E8EE;
+    border-radius: 7px;
+    width: 100%;
+    height: 40px;
+    padding: 0 0.7rem 0 0.7rem;
+    font-weight: 500;
+}
+
+.searchIcon {
+    position: absolute;
+    color: #8191A9;
+    width: 20px;
+    height: 20px;
+    transform: translateY(-50%);
+    top: 50%;
+    right: 10px;
+}
+
+.searchButton:hover {
+    cursor: pointer;
+}

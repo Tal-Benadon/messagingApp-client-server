@@ -1,0 +1,15 @@
+.input {
+    outline-color: var(--button-color);
+
+    border: none;
+    background-color: white;
+    border-radius: 7px;
+    width: 100%;
+    height: 40px;
+    font-weight: 500;
+
+}
+
+.inputLabel {
+    font-size: 1.2rem;
+}

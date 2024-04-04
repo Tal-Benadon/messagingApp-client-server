@@ -1,0 +1,32 @@
+.loginDiv {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+}
+
+.loginBottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.formStyle a {
+    text-decoration: none;
+    color: var(--button-color);
+}
+
+.registerTxt {
+    display: flex;
+    justify-content: center;
+}
+
+.formStyle {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.title {
+    text-align: center;
+}

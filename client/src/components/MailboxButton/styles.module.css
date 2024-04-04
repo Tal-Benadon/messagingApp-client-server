@@ -1,0 +1,46 @@
+.btnBody {
+    display: flex;
+    text-decoration: none;
+    gap: 24px;
+
+}
+
+.btnBody:hover .navIcon,
+.btnBody:hover .navText {
+    color: var(--button-color);
+}
+
+.navIcon,
+.navText {
+    transition: color 300ms ease;
+}
+
+.navIcon {
+    font-size: 24px;
+    color: #BEC4CD;
+}
+
+.navText {
+    color: black;
+    font-weight: var(--title-font-weight);
+}
+
+.active .navText,
+.active .navIcon {
+    color: var(--button-color);
+}
+
+.unreadMsgsIcon {
+    font-family: Kanit;
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: 12px;
+    color: white;
+    background-color: var(--button-color);
+    margin-left: auto;
+}

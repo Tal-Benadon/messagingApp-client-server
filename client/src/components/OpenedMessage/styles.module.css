@@ -1,0 +1,69 @@
+.openedMessageContainer {
+    background-color: white;
+    padding: 0.6rem;
+    border-radius: 7px;
+    padding-inline-start: 1rem;
+
+}
+
+.accordion {
+    display: grid;
+    transition: grid-template-rows 250ms ease-out;
+}
+
+.openedMessageHeader {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    /* delete margin later */
+    gap: 1rem;
+}
+
+.userName {
+    font-weight: var(--title-font-weight);
+    white-space: nowrap;
+}
+
+.dateHour {
+    color: #A2AAB4;
+    font-size: 0.8rem;
+    margin-left: auto;
+
+}
+
+.dateHourContainer {
+    display: flex;
+    gap: 1rem;
+    margin-left: auto;
+}
+
+/* .messageContentContainer {
+    overflow-y: hidden;
+} */
+
+.msgContent {
+    padding: 4rem 1rem 1rem;
+
+}
+
+.previewText {
+    overflow: hidden;
+    color: #A2AAB4;
+    font-size: 0.8rem;
+    font-weight: 500;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.previewText {
+    transition: opacity 300ms;
+}
+
+
+.ellipsisContainer {
+    min-width: 0;
+}
+
+button {
+    cursor: pointer;
+}

@@ -1,0 +1,108 @@
+.inboxMessageContainer {
+    /* background-color: var(--read-msg-color); */
+    padding: 0.6rem;
+    padding-inline-start: 1.2rem;
+    padding-top: 0.7 rem;
+
+    /* padding-inline-end: 1rem; */
+    /* width: 300px; */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.8rem;
+    transition: background-color 300ms ease, box-shadow 300ms ease;
+    border-radius: 7px;
+
+}
+
+.inboxMessageContainer:hover {
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.43);
+    -webkit-box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.43);
+    -moz-box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.43);
+}
+
+.avatarImg {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50px;
+}
+
+.userName {
+    font-weight: var(--title-font-weight);
+}
+
+.active {
+    background-color: white;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.43);
+    -webkit-box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.43);
+    -moz-box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.43);
+}
+
+.inboxMessageContainer,
+.active,
+.inboxMessageContainer:hover {
+    text-decoration: none;
+    color: inherit;
+    cursor: default;
+}
+
+.textContainer {
+    display: flex;
+    flex-direction: column;
+    /* width: calc(100% - 3rem - 1.9rem - 0.8rem); */
+    min-width: 0;
+    gap: 0.5rem;
+}
+
+.previewText {
+    overflow: hidden;
+    color: #8191A9;
+    font-size: 0.8rem;
+    font-weight: 500;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.msgTimestampsFavorites {
+    width: 1.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-inline-end: 1.5rem;
+    align-items: center;
+}
+
+.msgTime {
+    color: #717D9D;
+    font-size: 0.8rem;
+    font-weight: var(--title-font-weight);
+
+}
+
+
+.starIcon {
+    color: #D9DDE8;
+    width: 12px;
+
+}
+
+.activeStarIcon {
+    color: #00A389;
+
+    width: 12px;
+}
+
+.unreadMsgsIcon {
+    font-family: Kanit;
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+    font-size: 12px;
+    color: white;
+    background-color: var(--button-color);
+
+}

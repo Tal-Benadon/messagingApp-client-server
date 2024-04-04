@@ -1,0 +1,52 @@
+.MessagesChatPageContainer {
+    padding: 2.4rem 1.2rem 0 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    flex-grow: 1;
+    /* justify-content: space-around; */
+}
+
+.pageHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+}
+
+.iconsContainer {
+    display: flex;
+    gap: 24px;
+
+}
+
+.topHr {
+    border: 0.5px solid #D9DDE8;
+    width: 100%;
+}
+
+.messages {
+    width: 100%;
+    flex: 1 0 0;
+    overflow-y: auto;
+}
+
+.footerContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1.2rem;
+}
+
+.leftsideFooter {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+}
+
+.rightsideFooter {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}

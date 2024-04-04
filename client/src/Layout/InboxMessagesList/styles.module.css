@@ -1,0 +1,38 @@
+.whitePadding {
+    background-color: white;
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.padding {
+    padding: 1.2rem 0 1.2rem 0;
+}
+
+.messagesListContainer {
+    background-color: var(--read-msg-color);
+    width: 350px;
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    border-radius: 14px;
+    /* align-items: center; */
+    flex-grow: 1;
+    height: 100%;
+}
+
+.links {
+    flex-direction: column;
+    display: flex;
+    flex: 1 1 fit-content;
+    overflow-y: auto;
+    gap: 1.0rem;
+    padding-right: 0.5rem;
+}
+
+.topHr {
+    border: 0.5px solid #D9DDE8;
+    width: 100%;
+}

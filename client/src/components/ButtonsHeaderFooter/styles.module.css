@@ -1,0 +1,9 @@
+.iconDiv {
+    font-size: 1.4rem;
+    color: #D6DCE4;
+    transition: color 300ms ease;
+}
+
+.iconDiv:hover {
+    color: var(--button-color);
+}
