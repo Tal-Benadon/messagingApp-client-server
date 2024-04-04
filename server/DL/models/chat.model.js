@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-require('./message.model')
+require('./user.model')
 const messageSchema = new mongoose.Schema({
     date: {
         type: Date,
@@ -21,11 +21,11 @@ const chatSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    to: [{
+    msg: [messageSchema],
+    members: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
     },],
-    msg: [messageSchema],
     lastDate: {
         type: Date,
     }

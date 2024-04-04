@@ -2,7 +2,7 @@
 
 async function auth(req, res, next) {
     try {
-        req.user = { _id: "660d34df1d6c27eac1ac3dbd" }
+        req.user = { _id: "660e9b7ffd6968d3bfa0ce16" }
         next()
     } catch (error) {
         res.sendStatus(401)

@@ -10,7 +10,13 @@ async function read(filter = {}) {
 }
 
 async function readOne(filter, populate) {
-    return await chatModel.findOne(filter).populate(populate)
+    let population = {
+        msgs: true,
+        users: true
+    }
+    let data = await chatModel.findOne(filter)
+    if (population.msgs) data = await chatModel.findOne(filter).populate('msg.from')
+    return data
 }
 
 async function updateOne(filter, data) {
