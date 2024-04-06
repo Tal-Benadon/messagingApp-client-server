@@ -10,16 +10,20 @@ async function read(filter = {}) {
 }
 
 async function readOne(filter, populate) {
-    let population = {
-        msgs: true,
-        users: true
-    }
+    // let population = {
+    //     msgs: true,
+    //     users: true
+    // }
     let data = await chatModel.findOne(filter)
-    if (population.msgs) data = await chatModel.findOne(filter).populate('msg.from')
+    if (populate.msgs) data = await chatModel.findOne(filter).populate('msg.from')
     return data
 }
 
 async function updateOne(filter, data) {
     return await chatModel.findOneAndUpdate(filter, data)
 }
-module.exports = { create, read, readOne, updateOne }
+
+async function deleteOne(filter) {
+    return await chatModel.deleteOne(filter)
+}
+module.exports = { create, read, readOne, updateOne, deleteOne }
