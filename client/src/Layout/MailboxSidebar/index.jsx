@@ -24,8 +24,8 @@ export default function MailboxSidebar() {
         color: arrowRight && '#00A389'
     }
     const mailBoxNavData = [
-        { icon: <MdMoveToInbox />, text: 'Inbox', to: 'Inbox' },
-        { icon: <FaPaperPlane />, text: 'Sent Emails', to: 'sent-emails', },
+        { icon: <MdMoveToInbox />, text: 'Inbox', to: 'inbox' },
+        { icon: <FaPaperPlane />, text: 'Sent', to: 'sent', },
         { icon: <BsFillStarFill />, text: 'Favourite', to: 'favourite', },
         { icon: <BiSolidPencil />, text: 'Draft', to: 'draft', },
         { icon: <MdDeleteForever />, text: 'Deleted', to: 'deleted' },

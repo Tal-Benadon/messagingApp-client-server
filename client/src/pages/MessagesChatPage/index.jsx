@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './styles.module.css'
 import { BsFillStarFill } from "react-icons/bs";
 import { AiFillPrinter } from "react-icons/ai";
@@ -16,46 +16,56 @@ import FileUpload from '../../components/FileUpload';
 import dateTimeFormatting from '../../Helpers/dateTimeFormatting'
 import ConversationsTitle from '../../components/ConversationTitle';
 import DropDownOptions from '../../components/DropDownOptions';
+import { useParams } from 'react-router-dom';
+import apiCall from '../../Helpers/api';
+
 export default function MessagesChatPage() {
-    const fakeData = [{
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        // defaultTo: '/4',
-        defaultImg
-    }, {
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        // defaultTo: '/4',
-        defaultImg
-    }, {
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        // defaultTo: '/4',
-        defaultImg
-    },]
+    const { chatId } = useParams()
+    const [messagesList, setMessagesList] = useState([])
+    // console.log(chatId);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await apiCall({ method: "GET", url: `chat/${chatId}/messages` })
+
+                response.forEach(message => {
+                    message.hour = dateTimeFormatting.formatTime(message.date)
+                    message.date = dateTimeFormatting.translateDateToString(message.date)
+                    if (message.senderId === '660e9b7ffd6968d3bfa0ce16') {
+                        message.you = true
+                    }
+                });
+
+                setMessagesList(response)
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetchData()
+    }, [chatId])
+
+
     const [msgForm, setMsgForm] = useState({})
-    const [msgsList, setMsgsList] = useState(fakeData)
+
     const createMsg = () => {
         const newMsg = {
-            defaultUserName: "Tal Ben Adon",
-            defaultMsgPreview: msgForm.msgBox,
-            defaultDate: dateTimeFormatting.translateDateToString(new Date()),
-            defaultHour: dateTimeFormatting.formatTime(new Date())
+            sender: "Tal Ben Adon",
+            content: msgForm.msgBox,
+            date: dateTimeFormatting.translateDateToString(new Date()),
+            hour: dateTimeFormatting.formatTime(new Date()),
+            you: true
         }
         return newMsg
     }
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault()
         const newMsg = createMsg()
-        console.log(newMsg);
-        setMsgsList((prev) => ([...prev, newMsg]))
+        const msgToServer = { ...newMsg }
+        delete msgToServer.hour
+        msgToServer.date = new Date()
+        const response = await apiCall({ method: "PUT", url: `chat/${chatId}/messages`, body: msgToServer })
+        setMessagesList((prev) => ([...prev, newMsg]))
         console.log(msgForm);
         setMsgForm(prevForm => ({
             ...prevForm,
@@ -89,8 +99,8 @@ export default function MessagesChatPage() {
             <hr className={styles.topHr} />
             <ConversationsTitle />
             <div className={styles.messages}>
-                {msgsList.map((data, index) => {
-                    return <OpenedMessage key={index} avatarImg={data.defaultImg} userName={data.defaultUserName} msg={data.defaultMsgPreview} hour={data.defaultHour} date={data.defaultDate} />
+                {messagesList.map((data, index) => {
+                    return <OpenedMessage key={index} avatarImg={data.avatar} userName={data.sender} msg={data.content} hour={data.hour} date={data.date} you={data.you} />
 
                 })}
             </div>

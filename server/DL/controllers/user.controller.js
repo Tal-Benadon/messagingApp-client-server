@@ -9,15 +9,10 @@ async function read(filter = {}, populate) {
     return await userModel.find(filter).populate(populate)
 }
 
-async function readOne(filter, populate = '') {
-    // let population = {
-    //     chats: true,
-    //     users: true,
-    // }
+async function readOne(filter) {
     let data = await userModel.findOne({ ...filter, isActive: true })
-    if (populate.chats) data = await data.populate('chats.chat')
-    if (populate.users) data = await data.populate('chats.chat.members')
-    return data.toObject()
+    return data
+
 }
 
 async function readOneById(filter) {
@@ -31,4 +26,24 @@ async function updateOne(filter, data) {
 async function updateMany(filter, data) {
     return await userModel.updateMany(filter, data, { new: true })
 }
-module.exports = { create, read, readOne, readOneById, updateOne, updateMany }
+
+async function readByFlags(id, flags = [], populate = {}) {
+    console.log("flags", flags);
+    let data = await userModel.findOne({ _id: id, isActive: true })
+    data.chats = data.chats.filter(chat => flags.every(flag => {
+        if (typeof flag === 'object') {
+            let [[key, value]] = Object.entries(flag)
+            return chat[key] == value
+        }
+        return chat[flag]
+    }))
+    if (populate.chats) data = await data.populate('chats.chat')
+    if (populate.users) data = await data.populate({ path: 'chats.chat.members', select: "fullName avatar _id" })
+
+    return data.toObject()
+}
+
+async function save(data) {
+    return await data.save()
+}
+module.exports = { create, read, readOne, readOneById, updateOne, updateMany, readByFlags, save }

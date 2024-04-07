@@ -1,5 +1,38 @@
 const userController = require('../DL/controllers/user.controller')
 const chatController = require('../DL/controllers/chat.controller')
+const { Flags } = require('../utility')
+let funcs = {
+    inbox: [Flags.Inbox],
+    notread: [Flags.NotRead],
+    sent: [Flags.Sent],
+    favorite: [Flags.Favorite],
+    deleted: [Flags.Deleted],
+    draft: [Flags.Draft],
+}
+
+// user.chats = user.chats.map(chats => {
+//     return {
+//         chatInitial: chats.chat.subject.charAt(0),
+//         subjectPreview: chats.chat.subject,
+//         namesTitle: namesInTitleFormat(chats.chat.members, userId)
+//     }
+// })
+
+//================================================ Template
+async function getChats(userId, flag) {
+    if (!funcs[flag]) throw "you've been thrown"
+    let { chats } = await userController.readByFlags(userId, funcs[flag], { chats: true, users: true })
+    // chats = chats.map(chat => {
+    //     return {
+    //         chatInitial: chat.chat.subject.charAt(0),
+    //         subjectPreview: chat.chat.subject,
+    //         namesTitle: namesInTitleFormat(chat.chat.members, userId)
+    //     }
+    // })
+
+    return chats
+}
+//================================================
 
 function namesInTitleFormat(membersList, userId) {
 
@@ -22,7 +55,9 @@ function namesInTitleFormat(membersList, userId) {
 
 async function createSendChat(body, userId) {
     try {
-        const recipients = body.members
+
+        // const newChat = await createChat(userId, data)
+        // const recipients = body.members
         const data = {
             subject: body.subject,
             members: [userId, ...body.members],
@@ -30,14 +65,21 @@ async function createSendChat(body, userId) {
             msg: [body.msg]
         }
 
-        const newChat = await createChat(userId, data)
+        const emails = ['user1@example.com', 'user3@example.com']
+        const recipients = await Promise.all(emails.map(async email => {
+            const temp = await userController.readOne({ email })
+            return temp
+        }))
+
+        // const 
+
 
         const result = await updateAfterSendStatus(userId, newChat._id, recipients)
 
-        return {
-            newChat: newChat,
-            updateResult: result
-        }
+        // return {
+        //     newChat: newChat,
+        //     updateResult: result
+        // }
     } catch (error) {
         console.error(error);
     }
@@ -59,6 +101,7 @@ async function createChat(userId, data) {
 
 async function updateAfterSendStatus(userId, chatId, recipients) {
     try {
+        // send to Aviad's server
         const updateSentStatus = await userController.updateOne(
             { _id: userId, "chats.chat": chatId },
             { $set: { "chats.$.isSent": true } }
@@ -135,96 +178,14 @@ async function sendDraft(userId, chatId) {
     }
 }
 
-async function getReceivedChats(userId) {
-    try {
-        const user = await userController.readOne({ _id: userId }, { chats: true, users: true })
-        let chatsList = user.chats.filter(chat => chat.isReceived)
-        console.log(chatsList);
-        chatsList = chatsList.map(chats => {
-            return {
-                chatInitial: chats.chat.subject.charAt(0),
-                subjectPreview: chats.chat.subject,
-                namesTitle: namesInTitleFormat(chats.chat.members, userId)
-            }
-        })
-        return chatsList
 
-    } catch (error) {
-        console.error(error);
-    }
-}
 
-async function getSentChats(userId) {
-    try {
-        const user = await userController.readOne({ _id: userId }, { chats: true, users: true })
-        let chatsList = user.chats.filter(chat => chat.isSent)
-        console.log(chatsList);
-        chatsList = chatsList.map(chats => {
-            return {
-                chatInitial: chats.chat.subject.charAt(0),
-                subjectPreview: chats.chat.subject,
-                namesTitle: namesInTitleFormat(chats.chat.members, userId)
-            }
-        })
-        return chatsList
-    } catch (error) {
-        console.error(error);
-    }
-}
 
-async function getfavoriteChats(userId) {
-    try {
-        const user = await userController.readOne({ _id: userId }, { chats: true, users: true })
-        let chatsList = user.chats.filter(chat => chat.isFavorite)
-        console.log(chatsList);
-        chatsList = chatsList.map(chats => {
-            return {
-                chatInitial: chats.chat.subject.charAt(0),
-                subjectPreview: chats.chat.subject,
-                namesTitle: namesInTitleFormat(chats.chat.members, userId)
-            }
-        })
-        return chatsList
-    } catch (error) {
-        console.error(error);
-    }
-}
 
-async function getDraftChats(userId) {
-    try {
-        const user = await userController.readOne({ _id: userId }, { chats: true, users: true })
-        let chatsList = user.chats.filter(chat => chat.draft)
-        console.log(chatsList);
-        chatsList = chatsList.map(chats => {
-            return {
-                chatInitial: chats.chat.subject.charAt(0),
-                subjectPreview: chats.chat.subject,
-                namesTitle: namesInTitleFormat(chats.chat.members, userId)
-            }
-        })
-        return chatsList
-    } catch (error) {
-        console.error(error);
-    }
-}
 
-async function getdeletedChats(userId) {
-    try {
-        const user = await userController.readOne({ _id: userId }, { chats: true, users: true })
-        let chatsList = user.chats.filter(chat => chat.isDeleted)
-        console.log(chatsList);
-        chatsList = chatsList.map(chats => {
-            return {
-                chatInitial: chats.chat.subject.charAt(0),
-                subjectPreview: chats.chat.subject,
-                namesTitle: namesInTitleFormat(chats.chat.members, userId)
-            }
-        })
-        return chatsList
-    } catch (error) {
-        console.error(error);
-    }
-}
+
+
+
 
 async function deleteChat(userId, chatId) {
     try {
@@ -272,11 +233,12 @@ async function deleteDraft(userId, chatId) {
 
 async function moveToDraft(chatId, userId) {
     try {
-        const result = await userController.updateOne(
-            { _id: userId, 'chats.chat': chatId },
-            { $set: { "chats.$.draft": true } }
-        )
-        return result
+        let user = await userController.readOne(userId)
+        user.chats.find(chat => chat.chat == chatId).draft = true
+        userController.save(user)
+        return {
+            success: true
+        }
     } catch (error) {
         console.error(error);
     }
@@ -284,23 +246,12 @@ async function moveToDraft(chatId, userId) {
 
 async function addToFavorite(userId, chatId) {
     try {
-        const result = await userController.updateOne(
-            { _id: userId, 'chats.chat': chatId },
-            { $set: { "chats.$.isFavorite": true } }
-        )
-        return result
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-async function removeFromFavorite(userId, chatId) {
-    try {
-        const result = await userController.updateOne(
-            { _id: userId, 'chats.chat': chatId },
-            { $set: { "chats.$.isFavorite": false } }
-        )
-        return result
+        let user = await userController.readOne(userId)
+        user.chats.find(chat => chat.chat == chatId).isFavorite = true
+        userController.save(user)
+        return {
+            success: true
+        }
     } catch (error) {
         console.error(error);
     }
@@ -308,19 +259,33 @@ async function removeFromFavorite(userId, chatId) {
 
 async function readChat(userId, chatId) {
     try {
-        const result = await userController.updateOne(
-            { _id: userId, 'chats.chat': chatId },
-            { $set: { "chats.$.isRead": true } }
-        )
-        return result
+        let user = await userController.readOne(userId)
+        user.chats.find(chat => chat._id == chatId).isRead = true
+        userController.save(user)
+        return {
+            success: true
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+async function removeFromFavorite(userId, chatId) {
+    try {
+        let user = await userController.readOne(userId)
+        user.chats.find(chat => chat.chat == chatId).isFavorite = false
+        userController.save(user)
+        return {
+            success: true
+        }
     } catch (error) {
         console.error(error);
     }
 }
 
+
 async function getChatMessages(chatId) {
     try {
-        const chat = await chatController.readOne({ _id: chatId })
+        const chat = await chatController.readOne({ _id: chatId }, { msgs: true })
         let msgList = chat.msg
         msgList = msgList.map(msg => {
             return {
@@ -338,15 +303,31 @@ async function getChatMessages(chatId) {
     }
 }
 
+async function sendMessage(chatId, msgData) {
+    try {
+
+        const chat = await chatController.readOne({ _id: chatId })
+        if (chat) {
+            chat.msg.push(msgData)
+            chatController.save(chat)
+            return {
+                success: true
+            }
+        } else {
+            return {
+                success: false
+            }
+        }
+    } catch (error) {
+        console.error(error);
+
+    }
+}
+
 
 module.exports = {
-    getReceivedChats,
-    getSentChats,
     getChatMessages,
-    getfavoriteChats,
-    getdeletedChats,
     createSendChat,
-    getDraftChats,
     moveToDraft,
     createChat,
     updateAfterSendStatus,
@@ -356,5 +337,7 @@ module.exports = {
     removeFromFavorite,
     readChat,
     deleteChat,
-    deleteDraft
+    deleteDraft,
+    getChats,
+    sendMessage
 }

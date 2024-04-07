@@ -29,8 +29,8 @@ export default function Layout() {
                 <Route path='data' element={<>data?</>} />
                 <Route path='video' element={<>video?</>} />
                 <Route path='messages' element={<><MailboxSidebar /><Outlet /></>} >
-                    <Route path=':messageType' element={<><InboxMessagesList /><Outlet /></>}>
-                        <Route path=':emailId' element={<Content />} />
+                    <Route path=':chatType' element={<><InboxMessagesList /><Outlet /></>}>
+                        <Route path=':chatId' element={<Content />} />
                     </Route>
                 </Route>
             </Route>

@@ -1,130 +1,41 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './styles.module.css'
 import InboxMessage from '../../components/InboxMessage'
 import SearchBar from '../../components/SearchBar'
 import defaultImg from '../../assets/defaultImg.jpg'
+import apiCall from '../../Helpers/api'
+import { useParams } from 'react-router-dom'
+import messageFormatting from '../../Helpers/messageFormatting'
+import dateTimeFormatting from '../../Helpers/dateTimeFormatting'
 export default function InboxMessagesList() {
+    const [chatsList, setChatsList] = useState([])
+    const { chatType } = useParams()
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await apiCall({ method: "GET", url: `chat/inbox/${chatType}` })
 
-    const conversationsList = [{
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        defaultTo: '0',
-        defaultImg
-    }, {
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        defaultTo: '1',
-        defaultImg
-    }, {
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        defaultTo: '2',
-        defaultImg
-    }, {
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        defaultTo: '3',
-        defaultImg
-    }, {
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        defaultTo: '5',
-        defaultImg
-    }, {
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        defaultTo: '6',
-        defaultImg
-    }, {
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        defaultTo: '7',
-        defaultImg
-    }, {
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        defaultTo: '8',
-        defaultImg
-    }, {
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        defaultTo: '/9',
-        defaultImg
-    }, {
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        defaultTo: '/10',
-        defaultImg
-    }, {
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        defaultTo: '/11',
-        defaultImg
-    }, {
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        defaultTo: '/12',
-        defaultImg
-    }, {
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        defaultTo: '/13',
-        defaultImg
-    }, {
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        defaultTo: '/14',
-        defaultImg
-    }, {
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        defaultTo: '/15',
-        defaultImg
-    }, {
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        defaultTo: '/16',
-        defaultImg
-    }, {
-        defaultUserName: "Tal Ben Adon",
-        defaultMsgPreview: "Hey, I really need these documents bggggggggggg gggggggggggg ggggggggg gggggggggggg gggggggggg gggggggggggggggg gggggggggggg ggggggggg ggggg ggggggggggggggggggggggggg ggggggy tomorrow.",
-        defaultDate: "24.3.2024",
-        defaultHour: "4:20",
-        defaultTo: '/17',
-        defaultImg
-    },]
+                const chatList = response.map(chat => {
+                    return {
+                        namesTitle: messageFormatting(chat.chat.members, '660e9b7ffd6968d3bfa0ce16'),
+                        subject: chat.chat.subject,
+                        subjectInitial: chat.chat.subject.charAt(0),
+                        lastHour: dateTimeFormatting.formatTime(chat.chat.msg[chat.chat.msg.length - 1].date),
+                        chatId: chat.chat._id
+                    }
+                });
+                setChatsList(chatList)
+                console.log(chatList);
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetchData()
+    }, [chatType])
+
+
+
     return (
         <div className={styles.padding}>
 
@@ -133,13 +44,14 @@ export default function InboxMessagesList() {
                 <hr className={styles.topHr} />
                 {/* div */}
                 <div className={styles.links}>
-                    {conversationsList.map((data, index) => {
+                    {chatsList.map((data, index) => {
                         return <InboxMessage key={index}
-                            avatarImg={data.defaultImg}
-                            userName={data.defaultUserName}
-                            msgPreview={data.defaultMsgPreview}
-                            sentTime={data.defaultHour}
-                            to={data.defaultTo}
+                            // chat id
+                            initial={data.subjectInitial}
+                            userName={data.namesTitle}
+                            msgPreview={data.subject}
+                            sentTime={data.lastHour}
+                            to={data.chatId} // turn into CHAT ID 
                         // setReadMsg={setReadMsg}
                         // readMsg={readMsg}
                         />

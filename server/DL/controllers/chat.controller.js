@@ -9,7 +9,7 @@ async function read(filter = {}) {
     return await chatModel.find(filter)
 }
 
-async function readOne(filter, populate) {
+async function readOne(filter, populate = false) {
     // let population = {
     //     msgs: true,
     //     users: true
@@ -26,4 +26,7 @@ async function updateOne(filter, data) {
 async function deleteOne(filter) {
     return await chatModel.deleteOne(filter)
 }
-module.exports = { create, read, readOne, updateOne, deleteOne }
+async function save(data) {
+    return await data.save()
+}
+module.exports = { create, read, readOne, updateOne, deleteOne, save }

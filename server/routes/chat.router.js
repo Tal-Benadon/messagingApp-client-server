@@ -3,20 +3,33 @@ const router = express.Router()
 const chatService = require('../BL/chat.service')
 
 
+router.get('/inbox/:flag', async (req, res) => {
+    try {
+        let flag = req.params.flag
+        const userId = req.user
+        console.log(userId);
+        let result = await chatService.getChats(userId, flag)
+        res.send(result)
+    } catch (error) {
+        console.error(error);
+    }
+})
 router.post('/create-send', async (req, res) => {
     try {
         const userId = req.user
-        const member1 = '660e9b7ffd6968d3bfa0ce14'
-        const member2 = '660e9b7ffd6968d3bfa0ce18'
-        req.body.subject = "Please help me im dead"
-        req.body.members = [member1, member2]
-        req.body.date = new Date()
-        req.body.msg = {
-            date: new Date(),
-            content: "What the hell just happened here?",
-            from: userId
-        }
-        const result = await chatService.createSendChat(req.body, userId)
+
+        const data = req.body
+        // const member1 = '660e9b7ffd6968d3bfa0ce14'
+        // const member2 = '660e9b7ffd6968d3bfa0ce18'
+        // req.body.subject = "Please help me im dead"
+        // req.body.members = [member1, member2]
+        // req.body.date = new Date()
+        // req.body.msg = {
+        //     date: new Date(),
+        //     content: "What the hell just happened here?",
+        //     from: userId
+        // }
+        const result = await chatService.createSendChat(data, userId)
         res.send(result)
     } catch (error) {
         console.error(error);
@@ -65,36 +78,6 @@ router.put('/:chatId/send-draft', async (req, res) => {
     }
 })
 
-router.get('/received', async (req, res) => {
-    try {
-        const userId = req.user
-        const chatListData = await chatService.getReceivedChats(userId)
-        console.log(chatListData);
-        res.send(chatListData)
-    } catch (error) {
-        console.error(error);
-    }
-})
-
-router.get('/sent', async (req, res) => {
-    try {
-        const userId = req.user
-        const chatListData = await chatService.getSentChats(userId)
-        res.send(chatListData)
-    } catch (error) {
-        console.error(error);
-    }
-})
-
-router.get('/favorite', async (req, res) => {
-    try {
-        const userId = req.user
-        const chatListData = await chatService.getfavoriteChats(userId)
-        res.send(chatListData)
-    } catch (error) {
-        console.error(error);
-    }
-})
 
 router.put('/:chatId/add-favorite', async (req, res) => {
     try {
@@ -112,16 +95,6 @@ router.put('/:chatId/remove-favorite', async (req, res) => {
         const chatId = '66115f43f4fafb5258259639' // params?
         const result = await chatService.removeFromFavorite(userId, chatId)
         res.send(result)
-    } catch (error) {
-        console.error(error);
-    }
-})
-
-router.get('/deleted', async (req, res) => {
-    try {
-        const userId = req.user
-        const chatListData = await chatService.getdeletedChats(userId)
-        res.send(chatListData)
     } catch (error) {
         console.error(error);
     }
@@ -162,15 +135,7 @@ router.put('/:chatId/read', async (req, res) => {
     }
 })
 
-router.get('/drafts', async (req, res) => {
-    try {
-        const userId = req.user
-        const draftsLists = await chatService.getDraftChats(userId)
-        res.send(draftsLists)
-    } catch (error) {
-        console.error(error);
-    }
-})
+
 
 router.put('/drafts', async (req, res) => {
     try {
@@ -186,11 +151,54 @@ router.put('/drafts', async (req, res) => {
 
 router.get('/:chatId/messages', async (req, res) => {
     try {
-        chatId = "660ef14b903f9d79c95a544f"
+        // chatId = "660ef14b903f9d79c95a544f"
+        const chatId = req.params.chatId
         const chatMessagesList = await chatService.getChatMessages(chatId)
         res.send(chatMessagesList)
     } catch (error) {
         console.error(error);
     }
 })
+
+router.put('/:chatId/messages', async (req, res) => {
+    try {
+        // const userId = req.user
+        const chatId = req.params.chatId
+        // req.body = {
+        //     date: new Date(),
+        //     content: "What the hell just happened here? im really angry that this just happened",
+        //     from: userId
+        // }
+        const msgData = req.body
+        msgData.from = req.user
+        console.log(msgData);
+        const result = await chatService.sendMessage(chatId, msgData)
+        res.send(result)
+    } catch (error) {
+        console.error(error);
+    }
+})
+
+
+//template
+
+
+
+
+
+
+// router.get('/inbox/read' , async (req,res)=>{
+//     try {
+
+//     } catch (error) {
+
+//     }
+// })
+// router.get('/sent' , async (req,res)=>{
+//     try {
+
+//     } catch (error) {
+
+//     }
+// })
 module.exports = router
