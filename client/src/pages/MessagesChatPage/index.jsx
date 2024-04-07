@@ -18,16 +18,32 @@ import ConversationsTitle from '../../components/ConversationTitle';
 import DropDownOptions from '../../components/DropDownOptions';
 import { useParams } from 'react-router-dom';
 import apiCall from '../../Helpers/api';
+import { useLocation } from 'react-router-dom/dist/umd/react-router-dom.development';
 
 export default function MessagesChatPage() {
     const { chatId } = useParams()
     const [messagesList, setMessagesList] = useState([])
-    // console.log(chatId);
+    const [title, setTitle] = useState('')
+    const location = useLocation()
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const title = await apiCall({ method: "GET", url: `chat/subject/${chatId}` })
+                const subject = title.subject
+                setTitle(subject)
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        fetchData()
+    }, [chatId])
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await apiCall({ method: "GET", url: `chat/${chatId}/messages` })
-
                 response.forEach(message => {
                     message.hour = dateTimeFormatting.formatTime(message.date)
                     message.date = dateTimeFormatting.translateDateToString(message.date)
@@ -97,10 +113,12 @@ export default function MessagesChatPage() {
                 </div>
             </div>
             <hr className={styles.topHr} />
-            <ConversationsTitle />
+            <ConversationsTitle title={title} />
             <div className={styles.messages}>
                 {messagesList.map((data, index) => {
-                    return <OpenedMessage key={index} avatarImg={data.avatar} userName={data.sender} msg={data.content} hour={data.hour} date={data.date} you={data.you} />
+                    return <><OpenedMessage key={index} avatarImg={data.avatar} userName={data.sender} msg={data.content} hour={data.hour} date={data.date} you={data.you} />
+                        <hr className={styles.msgsHr} />
+                    </>
 
                 })}
             </div>

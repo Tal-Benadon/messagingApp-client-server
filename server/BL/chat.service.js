@@ -324,6 +324,17 @@ async function sendMessage(chatId, msgData) {
     }
 }
 
+async function getSubject(chatId) {
+    try {
+        const chat = await chatController.readOne({ _id: chatId })
+        const subject = chat.subject
+        console.log(subject);
+        return subject
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 
 module.exports = {
     getChatMessages,
@@ -339,5 +350,6 @@ module.exports = {
     deleteChat,
     deleteDraft,
     getChats,
-    sendMessage
+    sendMessage,
+    getSubject
 }

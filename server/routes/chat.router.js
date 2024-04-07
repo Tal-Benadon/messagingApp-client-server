@@ -180,25 +180,18 @@ router.put('/:chatId/messages', async (req, res) => {
 })
 
 
-//template
+router.get('/subject/:chatId', async (req, res) => {
+    try {
+        const chatId = req.params.chatId
+        const result = await chatService.getSubject(chatId)
+        console.log(result);
+        const toClient = {
+            subject: result
+        }
 
-
-
-
-
-
-// router.get('/inbox/read' , async (req,res)=>{
-//     try {
-
-//     } catch (error) {
-
-//     }
-// })
-// router.get('/sent' , async (req,res)=>{
-//     try {
-
-//     } catch (error) {
-
-//     }
-// })
+        res.send(toClient)
+    } catch (error) {
+        console.error(error);
+    }
+})
 module.exports = router
