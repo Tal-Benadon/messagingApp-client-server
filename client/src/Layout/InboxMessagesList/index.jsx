@@ -49,7 +49,7 @@ export default function InboxMessagesList() {
                             // chat id
                             initial={data.subjectInitial}
                             userName={data.namesTitle}
-                            msgPreview={data.subject}
+                            subject={data.subject}
                             sentTime={data.lastHour}
                             to={data.chatId} // turn into CHAT ID 
                         // setReadMsg={setReadMsg}

@@ -4,7 +4,7 @@ import defaultImg from '../../assets/defaultImg.jpg'
 import MessageEllipsis from '../MessageEllipsis'
 import { BsFillStarFill } from "react-icons/bs";
 import { NavLink, useLocation } from 'react-router-dom';
-export default function InboxMessage({ initial, avatarImg, userName, msgPreview, sentTime, to }) {
+export default function InboxMessage({ initial, avatarImg, userName, subject, sentTime, to }) {
     const [readMsg, setReadMsg] = useState(false)
 
     const location = useLocation()
@@ -24,7 +24,7 @@ export default function InboxMessage({ initial, avatarImg, userName, msgPreview,
         return
     }
     return (
-        <NavLink to={to}
+        <NavLink to={to} state={{ subject }}
             className={({ isActive }) =>
                 isActive ? `${styles.active} ${styles.inboxMessageContainer}` : styles.inboxMessageContainer}
 
@@ -38,7 +38,7 @@ export default function InboxMessage({ initial, avatarImg, userName, msgPreview,
                     {userName}
                 </div>
                 <div className={styles.previewText}>
-                    {msgPreview}
+                    {subject}
                 </div>
             </div>
             <div className={styles.msgTimestampsFavorites}>

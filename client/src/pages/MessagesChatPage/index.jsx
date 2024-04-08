@@ -18,6 +18,7 @@ import ConversationsTitle from '../../components/ConversationTitle';
 import DropDownOptions from '../../components/DropDownOptions';
 import { useParams } from 'react-router-dom';
 import apiCall from '../../Helpers/api';
+import { useLocation } from 'react-router-dom/dist/umd/react-router-dom.development';
 
 export default function MessagesChatPage() {
     const { chatId } = useParams()
@@ -115,7 +116,9 @@ export default function MessagesChatPage() {
             <ConversationsTitle titleText={chatSubject} />
             <div className={styles.messages}>
                 {messagesList.map((data, index) => {
-                    return <OpenedMessage key={index} avatarImg={data.avatar} userName={data.sender} msg={data.content} hour={data.hour} date={data.date} you={data.you} />
+                    return <><OpenedMessage key={index} avatarImg={data.avatar} userName={data.sender} msg={data.content} hour={data.hour} date={data.date} you={data.you} />
+                        <hr className={styles.msgsHr} />
+                    </>
 
                 })}
             </div>

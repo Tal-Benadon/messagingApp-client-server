@@ -25,6 +25,12 @@
     width: 100%;
 }
 
+.msgsHr {
+    border: 0.5px solid #D9DDE8;
+    /* padding-bottom: 5px; */
+    width: 100%;
+}
+
 .messages {
     width: 100%;
     flex: 1 0 0;
