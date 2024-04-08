@@ -39,6 +39,7 @@ export default function MessagesChatPage() {
                         content: msg.content,
                         hour: dateTimeFormatting.formatTime(msg.date),
                         date: dateTimeFormatting.translateDateToString(msg.date),
+                        senderId: msg.from._id
                     }
                 })
                 setMessagesList(chatMsgs)
@@ -69,7 +70,7 @@ export default function MessagesChatPage() {
             content: msgForm.msgBox,
             date: dateTimeFormatting.translateDateToString(new Date()),
             hour: dateTimeFormatting.formatTime(new Date()),
-            you: true
+            senderId: "660e9b7ffd6968d3bfa0ce16"
         }
         return newMsg
     }
@@ -116,9 +117,9 @@ export default function MessagesChatPage() {
             <ConversationsTitle titleText={chatSubject} />
             <div className={styles.messages}>
                 {messagesList.map((data, index) => {
-                    return <><OpenedMessage key={index} avatarImg={data.avatar} userName={data.sender} msg={data.content} hour={data.hour} date={data.date} you={data.you} />
+                    return <React.Fragment key={index}><OpenedMessage userId={"660e9b7ffd6968d3bfa0ce16"} senderId={data.senderId} avatarImg={data.avatar} userName={data.sender} msg={data.content} hour={data.hour} date={data.date} />
                         <hr className={styles.msgsHr} />
-                    </>
+                    </React.Fragment>
 
                 })}
             </div>

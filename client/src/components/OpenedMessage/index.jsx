@@ -3,26 +3,31 @@ import styles from './styles.module.css'
 import defaultImg from '../../assets/defaultImg.jpg'
 import { TiArrowBack } from "react-icons/ti";
 
-export default function OpenedMessage({ you, avatarImg, userName, date, hour, msg }) {
-
+export default function OpenedMessage({ userId, senderId, avatarImg, userName, date, hour, msg }) {
+    //userId comes from context?
     const [isOpen, setIsOpen] = useState()
 
     const handleOnclick = () => {
         setIsOpen(!isOpen)
     }
-
+    const IsUser = () => {
+        if (userId === senderId) {
+            return true
+        } else {
+            return false
+        }
+    }
     return (
         <div className={styles.openedMessageContainer} >
             <button className={styles.openedMessageHeader} onClick={() => handleOnclick()}>
-                {you ? <div className='avatarImg'>
+                {IsUser() ? <div className='avatarImg'>
                     <TiArrowBack />
-                    You
                 </div> :
                     <img src={avatarImg} className='avatarImg' alt="avatar image" />
 
                 }
 
-                <div className={styles.userName}>{userName}</div>
+                <div className={styles.userName}>{IsUser() ? "You" : userName}</div>
                 <div className={styles.ellipsisContainer}>
                     <div className={styles.previewText} style={{ opacity: isOpen ? "0" : "1" }}>{msg}</div>
                 </div>
