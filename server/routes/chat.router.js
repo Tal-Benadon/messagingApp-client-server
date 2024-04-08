@@ -153,8 +153,8 @@ router.get('/:chatId/messages', async (req, res) => {
     try {
         // chatId = "660ef14b903f9d79c95a544f"
         const chatId = req.params.chatId
-        const chatMessagesList = await chatService.getChatMessages(chatId)
-        res.send(chatMessagesList)
+        const chat = await chatService.getChatMessages(chatId)
+        res.send(chat)
     } catch (error) {
         console.error(error);
     }

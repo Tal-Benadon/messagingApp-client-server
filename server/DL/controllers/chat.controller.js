@@ -15,7 +15,7 @@ async function readOne(filter, populate = false) {
     //     users: true
     // }
     let data = await chatModel.findOne(filter)
-    if (populate.msgs) data = await chatModel.findOne(filter).populate('msg.from')
+    if (populate.msgs) data = await chatModel.findOne(filter).populate({ path: 'msg.from', select: '-chats' })
     return data
 }
 

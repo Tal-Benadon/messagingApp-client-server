@@ -286,17 +286,18 @@ async function removeFromFavorite(userId, chatId) {
 async function getChatMessages(chatId) {
     try {
         const chat = await chatController.readOne({ _id: chatId }, { msgs: true })
-        let msgList = chat.msg
-        msgList = msgList.map(msg => {
-            return {
-                date: msg.date,
-                content: msg.content,
-                sender: msg.from.fullName,
-                senderId: msg.from._id,
-                avatar: msg.from.avatar
-            }
-        })
-        return msgList
+        // let msgList = chat.msg
+        // msgList = msgList.map(msg => {
+        //     return {
+        //         date: msg.date,
+        //         content: msg.content,
+        //         sender: msg.from.fullName,
+        //         senderId: msg.from._id,
+        //         avatar: msg.from.avatar
+        //     }
+        // })
+        // return msgList
+        return chat
     } catch (error) {
         console.error(error);
 

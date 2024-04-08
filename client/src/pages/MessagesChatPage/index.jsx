@@ -10,7 +10,7 @@ import { IoPaperPlane } from "react-icons/io5";
 import ButtonsHeaderFooter from '../../components/ButtonsHeaderFooter';
 import OpenedMessage from '../../components/OpenedMessage';
 import MessageInputBox from '../../components/MessageInputBox';
-import defaultImg from '../../assets/defaultImg.jpg'
+import defaultImg from '../../assets/defaultImg.jpg';
 import MessageButton from '../../components/MessageButton';
 import FileUpload from '../../components/FileUpload';
 import dateTimeFormatting from '../../Helpers/dateTimeFormatting'
@@ -22,21 +22,36 @@ import apiCall from '../../Helpers/api';
 export default function MessagesChatPage() {
     const { chatId } = useParams()
     const [messagesList, setMessagesList] = useState([])
+    const [chatSubject, setChatSubject] = useState('Chat Subject')
     // console.log(chatId);
+
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await apiCall({ method: "GET", url: `chat/${chatId}/messages` })
-
-                response.forEach(message => {
-                    message.hour = dateTimeFormatting.formatTime(message.date)
-                    message.date = dateTimeFormatting.translateDateToString(message.date)
-                    if (message.senderId === '660e9b7ffd6968d3bfa0ce16') {
-                        message.you = true
+                const subject = response.subject
+                const chatMsgs = response.msg.map(msg => {
+                    return {
+                        avatar: msg.from.avatar,
+                        sender: msg.from.fullName,
+                        content: msg.content,
+                        hour: dateTimeFormatting.formatTime(msg.date),
+                        date: dateTimeFormatting.translateDateToString(msg.date),
                     }
-                });
+                })
+                setMessagesList(chatMsgs)
+                setChatSubject(subject)
+                console.log(response);
+                // response.forEach(message => {
+                //     message.hour = dateTimeFormatting.formatTime(message.date)
+                //     message.date = dateTimeFormatting.translateDateToString(message.date)
+                //     if (message.senderId === '660e9b7ffd6968d3bfa0ce16') {
+                //         message.you = true
+                //     }
+                // });
 
-                setMessagesList(response)
+                // setMessagesList(response)
             } catch (error) {
                 console.error(error);
             }
@@ -97,7 +112,7 @@ export default function MessagesChatPage() {
                 </div>
             </div>
             <hr className={styles.topHr} />
-            <ConversationsTitle />
+            <ConversationsTitle titleText={chatSubject} />
             <div className={styles.messages}>
                 {messagesList.map((data, index) => {
                     return <OpenedMessage key={index} avatarImg={data.avatar} userName={data.sender} msg={data.content} hour={data.hour} date={data.date} you={data.you} />
