@@ -4,6 +4,7 @@ import styles from './styles.module.css'
 import { Link } from 'react-router-dom'
 import formConfig from '../../Helpers/formConfig.jsx'
 import MessageButton from '../MessageButton';
+import MessageInputBox from '../MessageInputBox/index.jsx'
 export default function Form({ formType }) {
     const config = formConfig[formType]
     const [formTitle, setFormTitle] = useState('')
@@ -80,6 +81,12 @@ export default function Form({ formType }) {
                     </div>),
                     top: <p>Enter your email address and we'll send you a link to reset your password</p>
                 }
+            case 'createChat':
+                return {
+                    content: (<MessageInputBox />
+
+                    )
+                }
             default:
                 break;
         }
@@ -90,7 +97,7 @@ export default function Form({ formType }) {
 
         <form onSubmit={handleSubmit} className={styles.formStyle}>
             <h1 className={styles.title}>{formTitle}</h1>
-            {formDetails.top && formDetails.top}
+            {formDetails?.top ? formDetails.top : ''}
             {Object.entries(config.fields).map(([name, { label, type }]) => (
                 <div key={name} >
                     <InputWrapper

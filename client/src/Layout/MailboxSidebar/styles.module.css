@@ -1,3 +1,9 @@
+.innerLayout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    grid-template-rows: 100dvb;
+}
+
 .container {
     background-color: white;
     display: flex;

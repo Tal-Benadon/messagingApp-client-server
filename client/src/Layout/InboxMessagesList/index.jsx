@@ -7,6 +7,7 @@ import apiCall from '../../Helpers/api'
 import { useParams } from 'react-router-dom'
 import messageFormatting from '../../Helpers/messageFormatting'
 import dateTimeFormatting from '../../Helpers/dateTimeFormatting'
+import { Outlet } from 'react-router-dom/dist/umd/react-router-dom.development'
 export default function InboxMessagesList() {
     const [chatsList, setChatsList] = useState([])
     const { chatType } = useParams()
@@ -37,27 +38,29 @@ export default function InboxMessagesList() {
 
 
     return (
-        <div className={styles.padding}>
-
-            <div className={styles.messagesListContainer}>
-                <SearchBar />
-                <hr className={styles.topHr} />
-                {/* div */}
-                <div className={styles.links}>
-                    {chatsList.map((data, index) => {
-                        return <InboxMessage key={index}
-                            // chat id
-                            initial={data.subjectInitial}
-                            userName={data.namesTitle}
-                            subject={data.subject}
-                            sentTime={data.lastHour}
-                            to={data.chatId} // turn into CHAT ID 
-                        // setReadMsg={setReadMsg}
-                        // readMsg={readMsg}
-                        />
-                    })}
+        <div className={styles.msgInnerLayout}>
+            <div className={styles.padding}>
+                <div className={styles.messagesListContainer}>
+                    <SearchBar />
+                    <hr className={styles.topHr} />
+                    {/* div */}
+                    <div className={styles.links}>
+                        {chatsList.map((data, index) => {
+                            return <InboxMessage key={index}
+                                // chat id
+                                initial={data.subjectInitial}
+                                userName={data.namesTitle}
+                                subject={data.subject}
+                                sentTime={data.lastHour}
+                                to={data.chatId} // turn into CHAT ID 
+                            // setReadMsg={setReadMsg}
+                            // readMsg={readMsg}
+                            />
+                        })}
+                    </div>
                 </div>
             </div>
+            <Outlet />
         </div>
 
     )

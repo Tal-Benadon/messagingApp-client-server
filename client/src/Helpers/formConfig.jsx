@@ -1,5 +1,6 @@
 import { RiLoginCircleLine } from "react-icons/ri";
 import { MdOutlineAssignment } from "react-icons/md";
+import { IoPaperPlane } from "react-icons/io5";
 const formConfig = {
     login: {
         fields: {
@@ -104,5 +105,34 @@ const formConfig = {
             wrap: true
         }
     },
+    createChat: {
+        fields: {
+            subject: {
+                label: 'Subject',
+                type: 'text',
+                initialValue: '',
+                validation: {
+                    require: true,
+                    message: 'Subject is required'
+                },
+            },
+            to: {
+                label: 'To',
+                type: 'email',
+                initialValue: '',
+            },
+        },
+        submitTo: {
+            label: 'Add',
+            type: 'button',
+            wrap: true
+        },
+        submit: {
+            label: 'Send',
+            icon: () => <IoPaperPlane />,
+            type: 'submit',
+            wrap: true
+        }
+    }
 }
 export default formConfig

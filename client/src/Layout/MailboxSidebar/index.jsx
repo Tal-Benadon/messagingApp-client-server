@@ -9,11 +9,17 @@ import { MdOutlineArrowForwardIos } from "react-icons/md";
 import { AiFillHtml5 } from "react-icons/ai";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 import { HiMail } from "react-icons/hi";
-
+import { useNavigate } from 'react-router-dom'
 import MailboxButton from '../../components/MailboxButton';
 import MessageButton from '../../components/MessageButton';
+import { Outlet } from 'react-router-dom/dist/umd/react-router-dom.development';
 export default function MailboxSidebar() {
+
     const [arrowRight, setArrowRight] = useState(false)
+    const navigate = useNavigate()
+    const handleNewMessageClick = () => {
+        navigate('new-chat')
+    }
     const toggleArrow = () => {
         setArrowRight(!arrowRight)
     }
@@ -38,46 +44,48 @@ export default function MailboxSidebar() {
 
     return (
         // <div className={styles.whitePadding}>
-
-        <div className={styles.container}>
-            <div className={styles.titleContainer}>
-                <div className={styles.iconDiv}>
-                    <MdOutlineKeyboardArrowLeft />
-                </div>
-                <div className={styles.title}>Mailbox</div>
-            </div>
-            <hr className={styles.topHr} />
-            <MessageButton icon={<HiMail />} title={'New Message'} />
-            {mailBoxNavData.map((data, index) => {
-                return <MailboxButton key={index}
-                    icon={data.icon}
-                    text={data.text}
-                    to={data.to}
-                    readMsg={false}
-                />
-            })}
-            <div className={styles.arrowAndText}>
-                <div className={styles.flexing} onClick={toggleArrow}>
-                    <div className={styles.menuArrow} style={arrowStyle} >
-                        <MdOutlineArrowForwardIos />
+        <div className={styles.innerLayout}>
+            <div className={styles.container}>
+                <div className={styles.titleContainer}>
+                    <div className={styles.iconDiv}>
+                        <MdOutlineKeyboardArrowLeft />
                     </div>
-                    <div className={styles.textClass} style={{ color: arrowRight && '#00A389' }}>
-                        More
-                    </div>
+                    <div className={styles.title}>Mailbox</div>
                 </div>
-                <div className={styles.accordion} style={{ gridTemplateRows: arrowRight ? '1fr' : '0fr' }}>
-                    <div style={{ overflowY: 'hidden' }}>
-                        <div className={styles.content}>
-                            {moreData.map((data, index) => {
-                                return <MailboxButton key={index}
-                                    icon={data.icon}
-                                    text={data.text}
-                                    to={data.to} />
-                            })}
+                <hr className={styles.topHr} />
+                <MessageButton icon={<HiMail />} title={'New Message'} handleClick={handleNewMessageClick} />
+                {mailBoxNavData.map((data, index) => {
+                    return <MailboxButton key={index}
+                        icon={data.icon}
+                        text={data.text}
+                        to={data.to}
+                        readMsg={false}
+                    />
+                })}
+                <div className={styles.arrowAndText}>
+                    <div className={styles.flexing} onClick={toggleArrow}>
+                        <div className={styles.menuArrow} style={arrowStyle} >
+                            <MdOutlineArrowForwardIos />
+                        </div>
+                        <div className={styles.textClass} style={{ color: arrowRight && '#00A389' }}>
+                            More
+                        </div>
+                    </div>
+                    <div className={styles.accordion} style={{ gridTemplateRows: arrowRight ? '1fr' : '0fr' }}>
+                        <div style={{ overflowY: 'hidden' }}>
+                            <div className={styles.content}>
+                                {moreData.map((data, index) => {
+                                    return <MailboxButton key={index}
+                                        icon={data.icon}
+                                        text={data.text}
+                                        to={data.to} />
+                                })}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <Outlet />
         </div>
         // </div>
     )

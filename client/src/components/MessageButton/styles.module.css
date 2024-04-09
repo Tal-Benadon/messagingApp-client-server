@@ -15,7 +15,8 @@
     letter-spacing: 1px;
     justify-content: flex-start;
     /* justify-content: center; */
-
+    justify-self: center;
+    align-self: center;
 }
 
 .icon {

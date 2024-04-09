@@ -1,7 +1,8 @@
 .input {
     outline-color: var(--button-color);
-
-    border: none;
+    display: flex;
+    align-items: center;
+    border: #D9DDE8 1px solid;
     background-color: white;
     border-radius: 7px;
     width: 100%;
@@ -12,4 +13,10 @@
 
 .inputLabel {
     font-size: 1.2rem;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    width: 100px;
 }
