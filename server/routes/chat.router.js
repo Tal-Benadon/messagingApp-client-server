@@ -19,6 +19,7 @@ router.post('/create-send', async (req, res) => {
         const userId = req.user
 
         const data = req.body
+        console.log(data);
         // const member1 = '660e9b7ffd6968d3bfa0ce14'
         // const member2 = '660e9b7ffd6968d3bfa0ce18'
         // req.body.subject = "Please help me im dead"

@@ -16,10 +16,13 @@ import { Outlet } from 'react-router-dom/dist/umd/react-router-dom.development';
 export default function MailboxSidebar() {
 
     const [arrowRight, setArrowRight] = useState(false)
+
     const navigate = useNavigate()
     const handleNewMessageClick = () => {
         navigate('new-chat')
     }
+
+
     const toggleArrow = () => {
         setArrowRight(!arrowRight)
     }

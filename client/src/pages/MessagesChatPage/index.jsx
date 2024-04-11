@@ -97,7 +97,7 @@ export default function MessagesChatPage() {
     const headerIconData = [
         { icon: <BsFillStarFill /> },
         { icon: <AiFillPrinter /> },
-        { icon: <BiSolidTrashAlt /> },
+        { icon: <BiSolidTrashAlt />, },
     ]
     const footerIconData = [{ type: 'image' }, { type: 'file' }]
     const footerDeleteOptionsData = [{ icon: <BiSolidTrashAlt /> }, { icon: <BsThreeDotsVertical /> }]

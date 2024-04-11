@@ -11,4 +11,13 @@ router.post('/register', async (req, res) => {
 
 })
 
+router.get('/database-emails', async (req, res) => {
+    try {
+        const userId = req.user._id
+        const result = await userService.getUsersEmails(userId)
+        res.send(result)
+    } catch (error) {
+        console.error(error);
+    }
+})
 module.exports = router

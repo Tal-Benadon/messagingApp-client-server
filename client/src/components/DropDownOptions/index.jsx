@@ -16,7 +16,7 @@ export default function DropDownOptions() {
                 onMouseEnter={handleMouseEnter}><BsThreeDotsVertical />
                 {isVisible &&
                     <ul className={styles.dropDownMenu}>
-                        <li>report spam</li>
+                        <li className={styles.dropLi}>report spam</li>
                     </ul>
                 }
             </button>

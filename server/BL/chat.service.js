@@ -2,84 +2,38 @@ const userController = require('../DL/controllers/user.controller')
 const chatController = require('../DL/controllers/chat.controller')
 const { Flags } = require('../utility')
 let funcs = {
-    inbox: [Flags.Inbox],
+    inbox: [Flags.Inbox,],
     notread: [Flags.NotRead],
     sent: [Flags.Sent],
-    favorite: [Flags.Favorite],
+    favourite: [Flags.Favorite],
     deleted: [Flags.Deleted],
     draft: [Flags.Draft],
 }
 
-// user.chats = user.chats.map(chats => {
-//     return {
-//         chatInitial: chats.chat.subject.charAt(0),
-//         subjectPreview: chats.chat.subject,
-//         namesTitle: namesInTitleFormat(chats.chat.members, userId)
-//     }
-// })
 
 //================================================ Template
 async function getChats(userId, flag) {
     if (!funcs[flag]) throw "you've been thrown"
     let { chats } = await userController.readByFlags(userId, funcs[flag], { chats: true, users: true })
-    // chats = chats.map(chat => {
-    //     return {
-    //         chatInitial: chat.chat.subject.charAt(0),
-    //         subjectPreview: chat.chat.subject,
-    //         namesTitle: namesInTitleFormat(chat.chat.members, userId)
-    //     }
-    // })
 
     return chats
 }
 //================================================
 
-function namesInTitleFormat(membersList, userId) {
-
-    const noUserMemberList = membersList.filter(member => !member._id.equals(userId._id))
-
-    const extraMembers = noUserMemberList.length - 2
-
-    if (noUserMemberList.length > 2) {
-        const namesTitle = `${noUserMemberList[0].fullName}, ${noUserMemberList[1]?.fullName} +${extraMembers}`
-        return namesTitle
-    }
-    if (noUserMemberList.length === 2) {
-        const namesTitle = `${noUserMemberList[0].fullName}, ${noUserMemberList[1]?.fullName}`
-        return namesTitle
-    } else {
-        const namesTitle = noUserMemberList[0].fullName
-        return namesTitle
-    }
-}
 
 async function createSendChat(body, userId) {
     try {
-
-        // const newChat = await createChat(userId, data)
-        // const recipients = body.members
-        const data = {
-            subject: body.subject,
-            members: [userId, ...body.members],
-            lastDate: body.date,
-            msg: [body.msg]
-        }
-
-        const emails = ['user1@example.com', 'user3@example.com']
-        const recipients = await Promise.all(emails.map(async email => {
-            const temp = await userController.readOne({ email })
-            return temp
-        }))
-
-        // const 
-
+        const recipients = body.members
+        console.log(recipients);
+        body.members = [...body.members, userId]
+        console.log(recipients);
+        const newChat = await createChat(userId, body)
 
         const result = await updateAfterSendStatus(userId, newChat._id, recipients)
-
-        // return {
-        //     newChat: newChat,
-        //     updateResult: result
-        // }
+        return {
+            newChat: newChat,
+            updateResult: result
+        }
     } catch (error) {
         console.error(error);
     }
@@ -116,14 +70,7 @@ async function updateAfterSendStatus(userId, chatId, recipients) {
         console.log(updateSentStatus);
         console.log(updateAddedMembers);
         return {
-            user: {
-                isUpdated: updateSentStatus.chats[chats.length - 1].isSent
-            },
-            members: {
-                receivedInDataBase: updateAddedMembers.acknowledged,
-                fieldsFound: updateAddedMembers.matchedCount,
-                fieldsChanged: updateAddedMembers.modifiedCount,
-            }
+            success: true
         }
     } catch (error) {
         console.error(error);

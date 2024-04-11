@@ -43,7 +43,8 @@
 
 .addSection {
     display: grid;
-    grid-template-columns: 1fr 100px
+    grid-template-columns: 1fr 100px;
+    position: relative
 }
 
 .addToEmailList {
@@ -54,4 +55,62 @@
     align-self: center;
     justify-self: center;
     border-radius: 7px;
+}
+
+.accordion {
+    display: grid;
+    transition: grid-template-rows 500ms ease-in-out;
+}
+
+@keyframes animation {
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1;
+    }
+
+}
+
+.emailTag {
+    background-color: var(--button-color);
+    width: fit-content;
+    padding: 2px 5px;
+    color: white;
+    border-radius: 4px;
+    animation: animation ease-in-out 1s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+}
+
+.tagButton {
+    color: rgb(207, 207, 207);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.emailTagsGroup {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.filteringUl {
+    background-color: white;
+    border: black 1px solid;
+    position: absolute;
+    top: 40px;
+    left: 83px;
+    width: 300px;
+    border-radius: 7px;
+
+}
+
+.emailLi:hover {
+    background-color: #D9DDE8;
+    cursor: pointer;
 }

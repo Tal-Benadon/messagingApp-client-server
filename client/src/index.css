@@ -17,6 +17,9 @@ button {
 /* html {
   background-color: beige;
 } */
+li {
+  list-style-type: none;
+}
 
 :root {
   --button-color: #00A389;

@@ -1,6 +1,6 @@
 module.exports = {
     Flags: {
-        Sent: "isSend",
+        Sent: "isSent",
         Inbox: "isReceived",
         Favorite: "isFavorite",
         Deleted: "isDeleted",
