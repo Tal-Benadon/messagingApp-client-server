@@ -2,12 +2,12 @@ const userController = require('../DL/controllers/user.controller')
 const chatController = require('../DL/controllers/chat.controller')
 const { Flags } = require('../utility')
 let funcs = {
-    inbox: [Flags.Inbox,],
+    inbox: [Flags.Inbox, Flags.NotDeleted],
     notread: [Flags.NotRead],
-    sent: [Flags.Sent],
-    favourite: [Flags.Favorite],
+    sent: [Flags.Sent, Flags.NotDeleted],
+    favourite: [Flags.Favorite, Flags.NotDeleted],
     deleted: [Flags.Deleted],
-    draft: [Flags.Draft],
+    draft: [Flags.Draft, Flags.NotDeleted],
 }
 
 
@@ -141,12 +141,31 @@ async function deleteChat(userId, chatId) {
             {
                 $set: {
                     "chats.$.isDeleted": true,
-                    "chats.$.isFavorite": false,
-                    "chats.$.isReceived": false,
                 }
             }
         )
+        console.log("result", result);
+        // console.log(result.chats[]);
         return result
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function removeChatFromUser(userId, chatId) {
+    try {
+        const user = await userController.readOne({ _id: userId })
+        const chatToCheck = user.chats.find(chatSection => chatSection.chat.equals(chatId))
+        if (chatToCheck.isDeleted) {
+            const deleteFromUser = await userController.updateOne(
+                { _id: userId },
+                {
+                    $pull: { chats: { chat: chatId } }
+                }
+            )
+        }
+        console.log(chatToCheck);
+        return chatToCheck
     } catch (error) {
         console.error(error);
     }
@@ -299,5 +318,6 @@ module.exports = {
     deleteDraft,
     getChats,
     sendMessage,
-    getSubject
+    getSubject,
+    removeChatFromUser
 }

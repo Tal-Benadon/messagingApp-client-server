@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { toast } from 'react-toastify'
 async function apiCall({ method, url, body }) {
     console.log('apiCall \n', { method, url, body });
     try {
@@ -17,5 +18,6 @@ async function apiCall({ method, url, body }) {
         throw error
     }
 }
+
 
 export default apiCall

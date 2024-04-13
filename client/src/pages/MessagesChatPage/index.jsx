@@ -7,6 +7,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { AiOutlinePaperClip } from "react-icons/ai";
 import { FaFileImage } from "react-icons/fa6";
 import { IoPaperPlane } from "react-icons/io5";
+import { AiOutlinePlus } from "react-icons/ai";
 import ButtonsHeaderFooter from '../../components/ButtonsHeaderFooter';
 import OpenedMessage from '../../components/OpenedMessage';
 import MessageInputBox from '../../components/MessageInputBox';
@@ -16,15 +17,25 @@ import FileUpload from '../../components/FileUpload';
 import dateTimeFormatting from '../../Helpers/dateTimeFormatting'
 import ConversationsTitle from '../../components/ConversationTitle';
 import DropDownOptions from '../../components/DropDownOptions';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import apiCall from '../../Helpers/api';
-import { useLocation } from 'react-router-dom/dist/umd/react-router-dom.development';
+// import PopUp from '../../components/PopUp';
+import { usePopup } from '../../context/ModalContext';
+import api from '../../Helpers/api';
+import apiToastCall from '../../Helpers/apiToast';
+import { useRefresh } from '../../context/RefreshContext';
+
 
 export default function MessagesChatPage() {
     const { chatId } = useParams()
+    const { chatType } = useParams()
     const [messagesList, setMessagesList] = useState([])
     const [chatSubject, setChatSubject] = useState('Chat Subject')
-    // console.log(chatId);
+    const { togglePopup, hidePopup } = usePopup()
+    const nav = useNavigate()
+    const location = useLocation()
+    const { setRefreshCount } = useRefresh()
+
 
 
     useEffect(() => {
@@ -45,15 +56,7 @@ export default function MessagesChatPage() {
                 setMessagesList(chatMsgs)
                 setChatSubject(subject)
                 console.log(response);
-                // response.forEach(message => {
-                //     message.hour = dateTimeFormatting.formatTime(message.date)
-                //     message.date = dateTimeFormatting.translateDateToString(message.date)
-                //     if (message.senderId === '660e9b7ffd6968d3bfa0ce16') {
-                //         message.you = true
-                //     }
-                // });
 
-                // setMessagesList(response)
             } catch (error) {
                 console.error(error);
             }
@@ -94,11 +97,44 @@ export default function MessagesChatPage() {
         setMsgForm((prev) => ({ ...prev, [name]: value }))
     }
 
-    const headerIconData = [
-        { icon: <BsFillStarFill /> },
-        { icon: <AiFillPrinter /> },
-        { icon: <BiSolidTrashAlt />, },
+    const handleDeleteChat = async (chatId) => {
+        const currentPath = location.pathname
+        const parentPath = currentPath.substring(0, currentPath.lastIndexOf('/'))
+        console.log(parentPath);
+        if (chatType === 'deleted') {
+            const result = await apiToastCall({ method: "DELETE", url: `chat/${chatId}/delete-chat`, success: 'Chat deleted', pending: 'Deleting Chat' })
+            setRefreshCount(prev => prev + 1)
+            nav(parentPath)
+
+        } else {
+            const result = await apiToastCall({ method: "DELETE", url: `chat/${chatId}/move-chat`, success: 'Chat Moved', pending: 'Moving Chat' })
+            setRefreshCount(prev => prev + 1)
+            nav(parentPath)
+        }
+    }
+    const handleRecoverChat = async (chatId) => {
+        console.log(`hi, recover ${chatId} pls`);
+    }
+    let headerIconData = [
+        { id: 'star', icon: <BsFillStarFill />, handleOnClick: () => { } },
+        { id: 'printer', icon: <AiFillPrinter />, handleOnClick: () => { } },
+        { id: 'trash', icon: <BiSolidTrashAlt />, handleOnClick: () => togglePopup('Are you sure?', 'Do you wish to move this chat to "Deleted"?', () => handleDeleteChat(chatId)) },
     ]
+    const handleTrashOnclick = () => togglePopup('Are you sure?', 'Do you wish to completely delete this chat?', () => handleDeleteChat(chatId))
+    const recoverChatObj = { id: 'plus', icon: <AiOutlinePlus />, handleOnClick: () => togglePopup('Recover Chat?', 'Do you wish to recover this chat?', () => handleRecoverChat(chatId)) }
+
+    if (chatType === 'deleted') {
+
+        headerIconData = headerIconData.map(item => {
+            if (item.id === 'star') {
+                return recoverChatObj
+            } else if (item.id === 'trash') {
+                return { ...item, handleOnClick: handleTrashOnclick }
+            }
+            return item
+        })
+    }
+    console.log(headerIconData);
     const footerIconData = [{ type: 'image' }, { type: 'file' }]
     const footerDeleteOptionsData = [{ icon: <BiSolidTrashAlt /> }, { icon: <BsThreeDotsVertical /> }]
     return (
@@ -108,10 +144,12 @@ export default function MessagesChatPage() {
                 Special offers
                 <div className={styles.iconsContainer}>
                     {headerIconData.map((data, index) => {
-                        return <ButtonsHeaderFooter key={index} icon={data.icon} />
+                        return <ButtonsHeaderFooter key={index} icon={data.icon} onClickHandle={data.handleOnClick} />
                     })}
                     <DropDownOptions />
                 </div>
+
+
             </div>
             <hr className={styles.topHr} />
             <ConversationsTitle titleText={chatSubject} />
@@ -144,3 +182,4 @@ export default function MessagesChatPage() {
     )
 
 }
+

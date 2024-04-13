@@ -8,8 +8,10 @@ import { useParams } from 'react-router-dom'
 import messageFormatting from '../../Helpers/messageFormatting'
 import dateTimeFormatting from '../../Helpers/dateTimeFormatting'
 import { Outlet } from 'react-router-dom/dist/umd/react-router-dom.development'
+import { useRefresh } from '../../context/RefreshContext'
 export default function InboxMessagesList() {
     const [chatsList, setChatsList] = useState([])
+    const { refreshCount } = useRefresh()
     const { chatType } = useParams()
     useEffect(() => {
         const fetchData = async () => {
@@ -33,7 +35,7 @@ export default function InboxMessagesList() {
             }
         }
         fetchData()
-    }, [chatType])
+    }, [chatType, refreshCount])
 
 
 

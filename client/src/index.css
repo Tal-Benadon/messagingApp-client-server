@@ -40,7 +40,7 @@ li {
 }
 
 .appConfinement {
-  /* background-color: blanchedalmond */
+  position: relative;
 }
 
 @media (width > 1919px) {

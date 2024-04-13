@@ -7,6 +7,7 @@ import MessageInputBox from '../../components/MessageInputBox';
 import useAxiosReq from '../../hooks/useAxiosReq';
 import apiCall from '../../Helpers/api';
 import { toast } from 'react-toastify'
+import { toastifyHandler } from '../../components/ToastifyHandler';
 export default function NewMessagePage() {
 
     const [emailsList, setEmailsList] = useState([])
@@ -27,15 +28,7 @@ export default function NewMessagePage() {
         event.preventDefault()
         if (!subject || !message || emailsList.length < 1) {
 
-            toast.error("Please fill all fields.", {
-                position: "bottom-right",
-                autoClose: 4000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            toastifyHandler('error', "Please fill all fields.")
             return;
         }
 
@@ -60,15 +53,7 @@ export default function NewMessagePage() {
         setMessage('')
         const result = await apiCall({ method: 'POST', url: 'chat/create-send', body: newChat })
         console.log(result);
-        toast.success("Your chat has been created.", {
-            position: "bottom-right",
-            autoClose: 4000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
+        toastifyHandler('success', "Your chat has been created.")
 
     }
 
