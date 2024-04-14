@@ -2,6 +2,7 @@
 import { toast } from 'react-toastify'
 
 export const toastifyHandler = async ({ handler, text }) => {
+    console.log(handler, text);
     const functionalities = {
         position: "bottom-right",
         autoClose: 4000,

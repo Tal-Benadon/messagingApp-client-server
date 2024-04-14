@@ -8,6 +8,8 @@ import useAxiosReq from '../../hooks/useAxiosReq';
 import apiCall from '../../Helpers/api';
 import { toast } from 'react-toastify'
 import { toastifyHandler } from '../../components/ToastifyHandler';
+import { TfiWrite } from "react-icons/tfi";
+import apiToastCall from '../../Helpers/apiToast';
 export default function NewMessagePage() {
 
     const [emailsList, setEmailsList] = useState([])
@@ -15,7 +17,7 @@ export default function NewMessagePage() {
     const [subject, setSubject] = useState('')
     const [message, setMessage] = useState('')
     const [dataBaseMails, setDataBaseMails] = useState([])
-    const { data, error, loading } = useAxiosReq({ method: "GET", url: 'user/database-emails' })
+    const { data, loading } = useAxiosReq({ method: "GET", url: 'user/database-emails' })
     const filter = email ? dataBaseMails.filter(mail => mail.email.includes(email) && !emailsList.includes(mail.email)) : []
     useEffect(() => {
         if (data) {
@@ -27,8 +29,7 @@ export default function NewMessagePage() {
     const handleSubmit = async (event) => {
         event.preventDefault()
         if (!subject || !message || emailsList.length < 1) {
-
-            toastifyHandler('error', "Please fill all fields.")
+            toastifyHandler({ handler: 'error', text: "Please make sure all fields are filled." })
             return;
         }
 
@@ -48,12 +49,13 @@ export default function NewMessagePage() {
             },
             lastDate: new Date()
         }
+        console.log("hi");
         setEmailsList([])
         setSubject('')
         setMessage('')
-        const result = await apiCall({ method: 'POST', url: 'chat/create-send', body: newChat })
+        const result = await apiToastCall({ method: 'POST', url: 'chat/create-send', body: newChat, pending: 'Creating Chat', success: 'Chat Created!', error: "An error occured while creating" })
         console.log(result);
-        toastifyHandler('success', "Your chat has been created.")
+        // toastifyHandler('success', "Your chat has been created.")
 
     }
 
@@ -95,7 +97,7 @@ export default function NewMessagePage() {
                             titleStyle={true}
                             onChange={(e) => setSubject(e.target.value)}
                             value={subject} />
-
+                        { }
                         <div className={styles.addSection} >
                             <InputWrapper title={'To'}
                                 name={'to'}
@@ -134,6 +136,7 @@ export default function NewMessagePage() {
                         <MessageInputBox value={message} onChange={(e) => setMessage(e.target.value)} />
                         <div style={{ alignSelf: 'end' }}>
                             <MessageButton wrap={true} title={'Send'} icon={<IoPaperPlane />} type={'submit'} />
+                            <MessageButton wrap={true} title={'Draft'} icon={<TfiWrite />} type={'button'} />
                         </div>
                     </div>
                 </form>

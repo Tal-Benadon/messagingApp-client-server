@@ -14,14 +14,25 @@ router.get('/inbox/:flag', async (req, res) => {
         console.error(error);
     }
 })
+router.put('/:chatId/read', async (req, res) => {
+    try {
+        const userId = req.user
+        const chatId = req.params.chatId
+        const result = await chatService.readChat(userId, chatId)
+        res.send(result)
+    } catch (error) {
+        console.error(error);
+    }
+})
 router.post('/create-send', async (req, res) => {
     try {
         const userId = req.user
 
         const data = req.body
-        console.log(data);
+        // console.log(data);
 
         const result = await chatService.createSendChat(data, userId)
+        console.log("IM THE RESULT", result);
         res.send(result)
     } catch (error) {
         console.error(error);
@@ -71,24 +82,24 @@ router.put('/:chatId/send-draft', async (req, res) => {
 })
 
 
-router.put('/:chatId/add-favorite', async (req, res) => {
+router.put('/:chatId/favorite', async (req, res) => {
     try {
         const userId = req.user
-        const chatId = '66115f43f4fafb5258259639' // params?
+        const chatId = req.params.chatId
         const result = await chatService.addToFavorite(userId, chatId)
         res.send(result)
     } catch (error) {
-        console.error(error);
+        res.send({ success: false }).status(401)
     }
 })
 router.put('/:chatId/remove-favorite', async (req, res) => {
     try {
         const userId = req.user
-        const chatId = '66115f43f4fafb5258259639' // params?
+        const chatId = req.params.chatId
         const result = await chatService.removeFromFavorite(userId, chatId)
         res.send(result)
     } catch (error) {
-        console.error(error);
+        res.send({ success: false }).status(401)
     }
 })
 
@@ -116,6 +127,17 @@ router.delete('/:chatId/delete-chat', async (req, res) => {
     } catch (error) {
         console.error(error);
 
+    }
+})
+
+router.put('/:chatId/restore-chat', async (req, res) => {
+    try {
+        const userId = req.user
+        const chatId = req.params.chatId
+        const result = await chatService.restoreChat(userId, chatId)
+        res.send(result)
+    } catch (error) {
+        console.error(error);
     }
 })
 

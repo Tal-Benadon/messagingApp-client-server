@@ -5,12 +5,15 @@ import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 import { ModalProvider } from './context/ModalContext.jsx'
 import { RefreshProvider } from './context/RefreshContext.jsx'
+import { ReadProvider } from './context/ReadContext.jsx'
 ReactDOM.createRoot(document.getElementById('root')).render(
   <RefreshProvider>
     <BrowserRouter>
-      <ModalProvider>
-        <App />
-      </ModalProvider>
+      <ReadProvider>
+        <ModalProvider>
+          <App />
+        </ModalProvider>
+      </ReadProvider>
     </BrowserRouter>
   </RefreshProvider>
 

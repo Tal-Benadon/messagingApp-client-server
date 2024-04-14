@@ -17,18 +17,19 @@ export default function InboxMessagesList() {
         const fetchData = async () => {
             try {
                 const response = await apiCall({ method: "GET", url: `chat/inbox/${chatType}` })
-
                 const chatList = response.map(chat => {
                     return {
                         namesTitle: messageFormatting(chat.chat.members, '660e9b7ffd6968d3bfa0ce16'),
                         subject: chat.chat.subject,
                         subjectInitial: chat.chat.subject.charAt(0),
                         lastHour: dateTimeFormatting.formatTime(chat.chat.msg[chat.chat.msg.length - 1].date),
-                        chatId: chat.chat._id
+                        chatId: chat.chat._id,
+                        isRead: chat.isRead,
+                        isFavorite: chat.isFavorite
                     }
                 });
                 setChatsList(chatList)
-                console.log(chatList);
+
 
             } catch (error) {
                 console.error(error);
@@ -47,16 +48,16 @@ export default function InboxMessagesList() {
                     <hr className={styles.topHr} />
                     {/* div */}
                     <div className={styles.links}>
-                        {chatsList.map((data, index) => {
-                            return <InboxMessage key={index}
-                                // chat id
+                        {chatsList.map((data) => {
+                            return <InboxMessage key={data.chatId}
+                                chatId={data.chatId}
                                 initial={data.subjectInitial}
                                 userName={data.namesTitle}
                                 subject={data.subject}
                                 sentTime={data.lastHour}
-                                to={data.chatId} // turn into CHAT ID 
-                            // setReadMsg={setReadMsg}
-                            // readMsg={readMsg}
+                                to={data.chatId}
+                                isRead={data.isRead}
+                                isFavorite={data.isFavorite}
                             />
                         })}
                     </div>

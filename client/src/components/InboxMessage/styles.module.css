@@ -105,17 +105,8 @@
     width: 12px;
 }
 
-.unreadMsgsIcon {
-    font-family: Kanit;
-    width: 24px;
-    height: 24px;
-    border-radius: 7px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: 600;
-    font-size: 12px;
-    color: white;
-    background-color: var(--button-color);
-
+.unreadChatIcon {
+    font-size: 28px;
+    color: var(--button-color);
+    transition: all 0.2s ease-in-out;
 }

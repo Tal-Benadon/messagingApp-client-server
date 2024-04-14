@@ -44,7 +44,7 @@ async function createChat(userId, data) {
         const newChat = await chatController.create({ ...data })
         const updateUser = await userController.updateOne(
             { _id: userId },
-            { $push: { chats: { chat: newChat._id } } },
+            { $push: { chats: { chat: newChat._id, isRead: true } } },
 
         )
         return newChat
@@ -152,6 +152,22 @@ async function deleteChat(userId, chatId) {
     }
 }
 
+async function restoreChat(userId, chatId) {
+    try {
+        const result = await userController.updateOne(
+            { _id: userId, 'chats.chat': chatId },
+            {
+                $set: {
+                    "chats.$.isDeleted": false,
+                }
+            }
+        )
+        console.log("result", result);
+        return result
+    } catch (error) {
+        console.error(error);
+    }
+}
 async function removeChatFromUser(userId, chatId) {
     try {
         const user = await userController.readOne({ _id: userId })
@@ -213,7 +229,20 @@ async function moveToDraft(chatId, userId) {
 async function addToFavorite(userId, chatId) {
     try {
         let user = await userController.readOne(userId)
-        user.chats.find(chat => chat.chat == chatId).isFavorite = true
+        user.chats.find(chat => chat.chat.toString() === chatId).isFavorite = true
+        userController.save(user)
+        return {
+            success: true
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function removeFromFavorite(userId, chatId) {
+    try {
+        let user = await userController.readOne(userId)
+        user.chats.find(chat => chat.chat.toString() === chatId).isFavorite = false
         userController.save(user)
         return {
             success: true
@@ -225,20 +254,9 @@ async function addToFavorite(userId, chatId) {
 
 async function readChat(userId, chatId) {
     try {
+        console.log(chatId);
         let user = await userController.readOne(userId)
-        user.chats.find(chat => chat._id == chatId).isRead = true
-        userController.save(user)
-        return {
-            success: true
-        }
-    } catch (error) {
-        console.error(error);
-    }
-}
-async function removeFromFavorite(userId, chatId) {
-    try {
-        let user = await userController.readOne(userId)
-        user.chats.find(chat => chat.chat == chatId).isFavorite = false
+        user.chats.find(chat => chat.chat.toString() === chatId).isRead = true
         userController.save(user)
         return {
             success: true
@@ -319,5 +337,6 @@ module.exports = {
     getChats,
     sendMessage,
     getSubject,
-    removeChatFromUser
+    removeChatFromUser,
+    restoreChat
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './styles.module.css'
 import { MdMoveToInbox } from "react-icons/md";
 import { FaPaperPlane } from "react-icons/fa6";
@@ -13,10 +13,28 @@ import { useNavigate } from 'react-router-dom'
 import MailboxButton from '../../components/MailboxButton';
 import MessageButton from '../../components/MessageButton';
 import { Outlet } from 'react-router-dom/dist/umd/react-router-dom.development';
+import useAxiosReq from '../../hooks/useAxiosReq';
+import { useRead } from '../../context/ReadContext';
 export default function MailboxSidebar() {
+    const { unreadChats, setUnreadChats } = useRead()
+    const { data, error, loading } = useAxiosReq({ method: "GET", url: `chat/inbox/inbox` })
+
+    const calculateUnreadNum = () => {
+        let counter = 0
+        data.forEach(chat => {
+            if (chat.isRead === false) {
+                counter++
+            }
+        });
+        setUnreadChats(counter)
+    }
+    useEffect(() => {
+        if (data) {
+            calculateUnreadNum()
+        }
+    }, [data])
 
     const [arrowRight, setArrowRight] = useState(false)
-
     const navigate = useNavigate()
     const handleNewMessageClick = () => {
         navigate('new-chat')
@@ -62,7 +80,7 @@ export default function MailboxSidebar() {
                         icon={data.icon}
                         text={data.text}
                         to={data.to}
-                        readMsg={false}
+                        unread={unreadChats}
                     />
                 })}
                 <div className={styles.arrowAndText}>

@@ -113,8 +113,13 @@ export default function MessagesChatPage() {
         }
     }
     const handleRecoverChat = async (chatId) => {
-        console.log(`hi, recover ${chatId} pls`);
+        const currentPath = location.pathname
+        const parentPath = currentPath.substring(0, currentPath.lastIndexOf('/'))
+        const result = await apiToastCall({ method: "PUT", url: `chat/${chatId}/restore-chat`, success: 'Chat Restored', pending: 'Restoring Chat' })
+        setRefreshCount(prev => prev + 1)
+        nav(parentPath)
     }
+
     let headerIconData = [
         { id: 'star', icon: <BsFillStarFill />, handleOnClick: () => { } },
         { id: 'printer', icon: <AiFillPrinter />, handleOnClick: () => { } },

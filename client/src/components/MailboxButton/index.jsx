@@ -1,7 +1,8 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import styles from './styles.module.css'
-export default function MailboxButton({ icon, text, to, readMsg }) {
+export default function MailboxButton({ icon, text, to, unread }) {
+    console.log(unread);
     return (
         <NavLink to={to}
             className={({ isActive }) =>
@@ -14,9 +15,9 @@ export default function MailboxButton({ icon, text, to, readMsg }) {
             <div className={styles.navText}>
                 {text}
             </div>
-            {!readMsg && text === 'Inbox' ?
+            {unread > 0 && text === 'Inbox' ?
                 <div className={styles.unreadMsgsIcon}>
-                    1
+                    {unread}
                 </div>
                 : ""}
 

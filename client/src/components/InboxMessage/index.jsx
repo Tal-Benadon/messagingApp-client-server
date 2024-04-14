@@ -3,28 +3,44 @@ import styles from './styles.module.css'
 import defaultImg from '../../assets/defaultImg.jpg'
 import MessageEllipsis from '../MessageEllipsis'
 import { BsFillStarFill } from "react-icons/bs";
-import { NavLink, useLocation } from 'react-router-dom';
-export default function InboxMessage({ initial, avatarImg, userName, subject, sentTime, to }) {
-    const [readMsg, setReadMsg] = useState(false)
+import { HiMail } from "react-icons/hi";
+import { NavLink } from 'react-router-dom';
+import apiCall from '../../Helpers/api';
+import { useRead } from '../../context/ReadContext';
+export default function InboxMessage({ initial, avatarImg, userName, subject, sentTime, to, isRead, isFavorite, chatId }) {
 
-    const location = useLocation()
-    const [isFavorite, setIsFavorite] = useState(false)
+    const [read, setRead] = useState(isRead)
+    const { setUnreadChats } = useRead()
+    const [favorite, setFavorite] = useState(isFavorite)
 
-
-    useEffect(() => {
-        if (location.pathname === to && !readMsg) {
-            setReadMsg(true)
+    const readCallTrigger = async (chatId) => {
+        if (read === false) {
+            const response = await apiCall({ method: "PUT", url: `chat/${chatId}/read` })
+            console.log(response);
+            if (response.success) {
+                setRead(true)
+                setUnreadChats(prev => prev - 1)
+            }
         }
-    }, [location, to, readMsg, setReadMsg])
+    }
 
-    const clickFavorite = (e) => {
+    const clickFavorite = async (e, chatId) => {
         e.preventDefault()
         e.stopPropagation()
-        setIsFavorite(!isFavorite)
+        if (favorite === false) {
+            setFavorite(true)
+            const response = await apiCall({ method: "PUT", url: `chat/${chatId}/favorite` })
+            if (response.success === false) setFavorite(false)
+        }
+        if (favorite === true) {
+            setFavorite(false)
+            const response = await apiCall({ method: "PUT", url: `chat/${chatId}/remove-favorite` })
+            if (response.success === false) setFavorite(false)
+        }
         return
     }
     return (
-        <NavLink to={to} state={{ subject }}
+        <NavLink onClick={() => readCallTrigger(chatId)} to={to} state={{ subject }}
             className={({ isActive }) =>
                 isActive ? `${styles.active} ${styles.inboxMessageContainer}` : styles.inboxMessageContainer}
 
@@ -43,9 +59,9 @@ export default function InboxMessage({ initial, avatarImg, userName, subject, se
             </div>
             <div className={styles.msgTimestampsFavorites}>
                 <div className={styles.msgTime}>{sentTime}</div>
-                {!readMsg ? <div className={styles.unreadMsgsIcon}>1</div>
-                    : <button onClick={clickFavorite} type='button'>
-                        <BsFillStarFill className={isFavorite ? styles.activeStarIcon : styles.starIcon} />
+                {!read ? <HiMail className={styles.unreadChatIcon} />
+                    : <button onClick={(e) => clickFavorite(e, chatId)} type='button'>
+                        <BsFillStarFill className={favorite ? styles.activeStarIcon : styles.starIcon} />
                     </button>}
 
             </div>
