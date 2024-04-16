@@ -10,12 +10,14 @@ import { toast } from 'react-toastify'
 import { toastifyHandler } from '../../components/ToastifyHandler';
 import { TfiWrite } from "react-icons/tfi";
 import apiToastCall from '../../Helpers/apiToast';
+import { usePopup } from '../../context/ModalContext';
 export default function NewMessagePage() {
-
+    const { togglePopup } = usePopup()
     const [emailsList, setEmailsList] = useState([])
     const [email, setEmail] = useState('')
     const [subject, setSubject] = useState('')
     const [message, setMessage] = useState('')
+    const [draftId, setDraftId] = useState() // TO DO, FIRST BOUNCER CREATES THE DRAFT, AFTER THAT EACH BOUNCE UPDATES IT
     const [dataBaseMails, setDataBaseMails] = useState([])
     const { data, loading } = useAxiosReq({ method: "GET", url: 'user/database-emails' })
     const filter = email ? dataBaseMails.filter(mail => mail.email.includes(email) && !emailsList.includes(mail.email)) : []
@@ -25,6 +27,27 @@ export default function NewMessagePage() {
         }
     }, [data])
 
+    const swapEmailForId = () => {
+        const membersIdList = []
+        emailsList.forEach(email => {
+            membersIdList.push(dataBaseMails.find(mail => mail.email === email)._id)
+        })
+        return membersIdList
+    }
+
+    const createChatObj = (membersIdList) => {
+        const newChat = {
+            subject,
+            members: membersIdList,
+            msg: {
+                content: message,
+                date: new Date(), //TODO - move newDate to server
+                from: '660e9b7ffd6968d3bfa0ce16'
+            },
+            lastDate: new Date() //TODO - move newDate to server
+        }
+        return newChat
+    }
 
     const handleSubmit = async (event) => {
         event.preventDefault()
@@ -34,21 +57,11 @@ export default function NewMessagePage() {
         }
 
 
-
-        const membersIdList = []
-        emailsList.forEach(email => {
-            membersIdList.push(dataBaseMails.find(mail => mail.email === email)._id)
-        })
-        const newChat = {
-            subject,
-            members: membersIdList,
-            msg: {
-                content: message,
-                date: new Date(),
-                from: '660e9b7ffd6968d3bfa0ce16'
-            },
-            lastDate: new Date()
-        }
+        const membersIdList = swapEmailForId()//[]
+        // emailsList.forEach(email => {
+        //     membersIdList.push(dataBaseMails.find(mail => mail.email === email)._id)
+        // })
+        const newChat = createChatObj(membersIdList)
         console.log("hi");
         setEmailsList([])
         setSubject('')
@@ -74,7 +87,20 @@ export default function NewMessagePage() {
             setEmail('')
         }
     }
+    const createDraft = async () => {
+        const membersIdList = swapEmailForId()
+        const newChat = createChatObj(membersIdList)
+        setEmailsList([])
+        setSubject('')
+        setMessage('')
+        const result = await apiToastCall({ method: 'POST', url: 'chat/create-draft', body: newChat, pending: 'Creating Draft', success: 'Draft Created!', error: "An error occured while creating" })
+        return
+    }
 
+    const handleDraftClick = () => {
+        togglePopup("Create draft?", 'This will wait for your completion under "Draft"', () => createDraft())
+
+    }
 
     const handleFilterClick = (email) => {
         setEmail(email)
@@ -134,9 +160,9 @@ export default function NewMessagePage() {
                             </div>
                         </div>
                         <MessageInputBox value={message} onChange={(e) => setMessage(e.target.value)} />
-                        <div style={{ alignSelf: 'end' }}>
+                        <div className={styles.sendDraftContainer} style={{ alignSelf: 'end' }}>
+                            <MessageButton wrap={true} title={'Draft'} icon={<TfiWrite />} type={'button'} handleClick={() => handleDraftClick()} />
                             <MessageButton wrap={true} title={'Send'} icon={<IoPaperPlane />} type={'submit'} />
-                            <MessageButton wrap={true} title={'Draft'} icon={<TfiWrite />} type={'button'} />
                         </div>
                     </div>
                 </form>

@@ -38,7 +38,8 @@ export default function InboxMessagesList() {
         fetchData()
     }, [chatType, refreshCount])
 
-
+    console.log(chatType);
+    console.log(chatsList);
 
     return (
         <div className={styles.msgInnerLayout}>
@@ -55,7 +56,8 @@ export default function InboxMessagesList() {
                                 userName={data.namesTitle}
                                 subject={data.subject}
                                 sentTime={data.lastHour}
-                                to={data.chatId}
+                                to={chatType === 'draft' ? `draft-edit/${data.chatId}` : data.chatId}
+                                isDrafts={chatType}
                                 isRead={data.isRead}
                                 isFavorite={data.isFavorite}
                             />

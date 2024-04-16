@@ -7,7 +7,7 @@ import { HiMail } from "react-icons/hi";
 import { NavLink } from 'react-router-dom';
 import apiCall from '../../Helpers/api';
 import { useRead } from '../../context/ReadContext';
-export default function InboxMessage({ initial, avatarImg, userName, subject, sentTime, to, isRead, isFavorite, chatId }) {
+export default function InboxMessage({ initial, avatarImg, userName, subject, sentTime, to, isRead, isFavorite, chatId, isDrafts }) {
 
     const [read, setRead] = useState(isRead)
     const { setUnreadChats } = useRead()
@@ -57,14 +57,17 @@ export default function InboxMessage({ initial, avatarImg, userName, subject, se
                     {subject}
                 </div>
             </div>
-            <div className={styles.msgTimestampsFavorites}>
-                <div className={styles.msgTime}>{sentTime}</div>
-                {!read ? <HiMail className={styles.unreadChatIcon} />
-                    : <button onClick={(e) => clickFavorite(e, chatId)} type='button'>
-                        <BsFillStarFill className={favorite ? styles.activeStarIcon : styles.starIcon} />
-                    </button>}
-
-            </div>
+            {isDrafts === 'draft'
+                ? ''
+                : <div className={styles.msgTimestampsFavorites}>
+                    <div className={styles.msgTime}>{sentTime}</div>
+                    {!read
+                        ? <HiMail className={styles.unreadChatIcon} />
+                        : <button onClick={(e) => clickFavorite(e, chatId)} type='button'>
+                            <BsFillStarFill className={favorite ? styles.activeStarIcon : styles.starIcon} />
+                        </button>}
+                </div>
+            }
         </NavLink>
     )
 }

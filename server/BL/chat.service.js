@@ -26,7 +26,7 @@ async function createSendChat(body, userId) {
         const recipients = body.members
         console.log(recipients);
         body.members = [...body.members, userId]
-        console.log(recipients);
+
         const newChat = await createChat(userId, body)
 
         const result = await updateAfterSendStatus(userId, newChat._id, recipients)
@@ -79,8 +79,9 @@ async function updateAfterSendStatus(userId, chatId, recipients) {
 
 async function createDraft(userId, data) {
     try {
+        data.members = [...data.members, userId]
         const newDraft = await createChat(userId, data)
-
+        console.log("newDraft", newDraft);
         const updateDraftTrue = await moveToDraft(newDraft._id, userId)
 
         return {
@@ -216,7 +217,7 @@ async function deleteDraft(userId, chatId) {
 async function moveToDraft(chatId, userId) {
     try {
         let user = await userController.readOne(userId)
-        user.chats.find(chat => chat.chat == chatId).draft = true
+        user.chats.find(chat => chat.chat.toString() === chatId).draft = true
         userController.save(user)
         return {
             success: true

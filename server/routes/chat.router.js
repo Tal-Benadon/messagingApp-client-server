@@ -42,22 +42,8 @@ router.post('/create-send', async (req, res) => {
 router.post('/create-draft', async (req, res) => {
     try {
         const userId = req.user
-        // const member1 = '660e9b7ffd6968d3bfa0ce14'
-        // const member2 = '660e9b7ffd6968d3bfa0ce18'
-        // req.body.subject = "Team oriented project, please respond ASAP"
-        // req.body.members = [member1, member2]
-        // req.body.date = new Date()
-        // req.body.msg = {
-        //     date: new Date(),
-        //     content: "OYOYOYOYOYOYOYOYOYYO?",
-        //     from: userId
-        // }
-        const data = {
-            subject: req.body.subject,
-            members: [userId, ...req.body.members],
-            lastDate: req.body.date,
-            msg: [req.body.msg],
-        }
+
+        const data = req.body
 
         const result = await chatService.createDraft(userId, data)
 

@@ -114,3 +114,8 @@
     background-color: #D9DDE8;
     cursor: pointer;
 }
+
+.sendDraftContainer {
+    display: flex;
+    gap: 16px;
+}
