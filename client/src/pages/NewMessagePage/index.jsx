@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styles from './styles.module.css'
 import MessageButton from '../../components/MessageButton'
 import { IoPaperPlane } from "react-icons/io5";
@@ -11,16 +11,58 @@ import { toastifyHandler } from '../../components/ToastifyHandler';
 import { TfiWrite } from "react-icons/tfi";
 import apiToastCall from '../../Helpers/apiToast';
 import { usePopup } from '../../context/ModalContext';
+import { debounce } from '../../Helpers/debouncer';
 export default function NewMessagePage() {
     const { togglePopup } = usePopup()
     const [emailsList, setEmailsList] = useState([])
     const [email, setEmail] = useState('')
     const [subject, setSubject] = useState('')
     const [message, setMessage] = useState('')
-    const [draftId, setDraftId] = useState() // TO DO, FIRST BOUNCER CREATES THE DRAFT, AFTER THAT EACH BOUNCE UPDATES IT
+    const [draftId, setDraftId] = useState(null) // TO DO, FIRST BOUNCER CREATES THE DRAFT, AFTER THAT EACH BOUNCE UPDATES IT
     const [dataBaseMails, setDataBaseMails] = useState([])
+    const [hasInteracted, setHasInteracted] = useState(false)
     const { data, loading } = useAxiosReq({ method: "GET", url: 'user/database-emails' })
     const filter = email ? dataBaseMails.filter(mail => mail.email.includes(email) && !emailsList.includes(mail.email)) : []
+
+
+    const createDraft = useCallback(async () => {
+        console.log('Creating Draft:', { subject, emailsList, message });
+        const membersIdList = swapEmailForId()
+        const newChat = createChatObj(membersIdList)
+        const result = await apiToastCall({ method: 'POST', url: 'chat/create-draft', body: newChat, pending: 'Saving Draft...', success: 'Draft Saved', error: "An error occured while creating" })
+        const draftDataId = result.data.draft._id
+        console.log(draftDataId);
+        setDraftId(draftDataId)
+    }, [subject, emailsList, message])
+
+    const updateDraft = useCallback(async () => {
+        console.log('Updating Draft', { subject, emailsList, message, draftId });
+        const membersIdList = swapEmailForId()
+        const newChat = createChatObj(membersIdList)
+        const result = await apiToastCall({ method: 'PUT', url: `chat/update-draft`, body: { ...newChat, draftId }, pending: 'Updating Draft...', success: 'Draft Updated', error: "An error occured while creating" })
+    }, [subject, emailsList, message, draftId])
+
+    const saveDraft = useCallback(() => {
+        if (hasInteracted) {
+            if (draftId) {
+                updateDraft()
+            } else {
+                createDraft()
+            }
+        }
+    }, [draftId, createDraft, updateDraft, hasInteracted])
+
+    const debouncedSaveDraft = useMemo(() => debounce(saveDraft, 3000), [saveDraft, hasInteracted]);
+
+    useEffect(() => {
+
+        debouncedSaveDraft()
+        return () => {
+            debouncedSaveDraft.cancel()
+        }
+
+    }, [debouncedSaveDraft])
+
     useEffect(() => {
         if (data) {
             setDataBaseMails(data)
@@ -56,13 +98,12 @@ export default function NewMessagePage() {
             return;
         }
 
-
         const membersIdList = swapEmailForId()//[]
         // emailsList.forEach(email => {
         //     membersIdList.push(dataBaseMails.find(mail => mail.email === email)._id)
         // })
         const newChat = createChatObj(membersIdList)
-        console.log("hi");
+        setHasInteracted(false)
         setEmailsList([])
         setSubject('')
         setMessage('')
@@ -72,10 +113,7 @@ export default function NewMessagePage() {
 
     }
 
-    const handleMailChange = (e) => {
 
-        setEmail(e.target.value)
-    }
     const handleAddEmail = (event) => {
         event.preventDefault()
         if (email && !emailsList.includes(email) && data.find(u => u.email === email)) {
@@ -87,7 +125,7 @@ export default function NewMessagePage() {
             setEmail('')
         }
     }
-    const createDraft = async () => {
+    const createDraftClick = async () => {
         const membersIdList = swapEmailForId()
         const newChat = createChatObj(membersIdList)
         setEmailsList([])
@@ -98,7 +136,7 @@ export default function NewMessagePage() {
     }
 
     const handleDraftClick = () => {
-        togglePopup("Create draft?", 'This will wait for your completion under "Draft"', () => createDraft())
+        togglePopup("Create draft?", 'This will wait for your completion under "Draft"', () => createDraftClick())
 
     }
 
@@ -108,6 +146,15 @@ export default function NewMessagePage() {
     const handleDeleteEmail = (emailToDelete) => {
         setEmailsList((currentEmails) => currentEmails.filter(email => email !== emailToDelete))
 
+    }
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target
+        setHasInteracted(true)
+        if (name === 'subject') setSubject(value)
+        if (name === 'to') setEmail(value)
+        if (name === 'message') setMessage(value)
+        debouncedSaveDraft()
     }
     return (
         <div className={styles.newChatContainer}>
@@ -121,7 +168,7 @@ export default function NewMessagePage() {
                             name={'subject'}
                             type={'text'}
                             titleStyle={true}
-                            onChange={(e) => setSubject(e.target.value)}
+                            onChange={handleInputChange}
                             value={subject} />
                         { }
                         <div className={styles.addSection} >
@@ -131,7 +178,7 @@ export default function NewMessagePage() {
                                 style={{ display: 'flex' }}
                                 titleStyle={true}
                                 value={email}
-                                onChange={(e) => handleMailChange(e)}
+                                onChange={handleInputChange}
                             />
                             <button className={styles.addToEmailList} onClick={handleAddEmail}>Add</button>
                             {filter.length === 1 && filter[0].email === email ? '' :
@@ -159,7 +206,7 @@ export default function NewMessagePage() {
                                 })}
                             </div>
                         </div>
-                        <MessageInputBox value={message} onChange={(e) => setMessage(e.target.value)} />
+                        <MessageInputBox name={'message'} value={message} onChange={handleInputChange} />
                         <div className={styles.sendDraftContainer} style={{ alignSelf: 'end' }}>
                             <MessageButton wrap={true} title={'Draft'} icon={<TfiWrite />} type={'button'} handleClick={() => handleDraftClick()} />
                             <MessageButton wrap={true} title={'Send'} icon={<IoPaperPlane />} type={'submit'} />

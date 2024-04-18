@@ -94,6 +94,24 @@ async function createDraft(userId, data) {
     }
 }
 
+async function updateDraft(userId, draftId, data) {
+    try {
+        console.log("data", data);
+        const chat = await chatController.readOne({ _id: draftId })
+        if (!data.subject && data.members.length === 0 && !chat.msg.content) {
+            deleteDraft(userId, chat._id)
+            return 'Draft Deleted'
+        }
+        chat.subject = data.subject
+        chat.members = data.members
+        chat.msg = [data.msg]
+        chatController.save(chat)
+        return { success: true }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 async function sendDraft(userId, chatId) {
     try {
 
@@ -172,7 +190,7 @@ async function restoreChat(userId, chatId) {
 async function removeChatFromUser(userId, chatId) {
     try {
         const user = await userController.readOne({ _id: userId })
-        const chatToCheck = user.chats.find(chatSection => chatSection.chat.equals(chatId))
+        const chatToCheck = user.chats.find(chatSection => chatSection.chat.equals(chatId._id))
         if (chatToCheck.isDeleted) {
             const deleteFromUser = await userController.updateOne(
                 { _id: userId },
@@ -190,6 +208,8 @@ async function removeChatFromUser(userId, chatId) {
 
 async function deleteDraft(userId, chatId) {
     try {
+        console.log("UserId", userId);
+        console.log("ChatId", chatId);
         const user = await userController.readOne({ _id: userId })
         const chatToCheck = user.chats.find(chatSection => chatSection.chat.equals(chatId))
         if (chatToCheck.draft) {
@@ -217,7 +237,13 @@ async function deleteDraft(userId, chatId) {
 async function moveToDraft(chatId, userId) {
     try {
         let user = await userController.readOne(userId)
-        user.chats.find(chat => chat.chat.toString() === chatId).draft = true
+        console.log("NEWDRAFTID", chatId.toString());
+        // const chatsId = user.chats.forEach(chat => {
+        //     console.log(chat.chat.toString());
+        // })
+        user.chats.find(chat => chat.chat.toString() === chatId.toString()).draft = true
+        console.log("hi im chat", user);
+        // user.chats.find(chat => chat.chat.toString() === chatId).draft = true
         userController.save(user)
         return {
             success: true
@@ -339,5 +365,6 @@ module.exports = {
     sendMessage,
     getSubject,
     removeChatFromUser,
-    restoreChat
+    restoreChat,
+    updateDraft
 }

@@ -7,7 +7,6 @@ const messageSchema = new mongoose.Schema({
     },
     content: {
         type: String,
-        required: true
     },
     from: {
         type: mongoose.Schema.Types.ObjectId,
@@ -19,7 +18,6 @@ const messageSchema = new mongoose.Schema({
 const chatSchema = new mongoose.Schema({
     subject: {
         type: String,
-        required: true
     },
     msg: [messageSchema],
     members: [{

@@ -16,10 +16,11 @@ export default function DraftEditorPage() {
                 setSubject(chatData.subject)
             }
             if (chatData.members.length > 1) {
-                const userIndex = chatData.members.findIndexOf(member => member === '660e9b7ffd6968d3bfa0ce16')
-                if (index > -1) {
+                console.log(chatData.members);
+                const userIndex = chatData.members.indexOf(member => member === '660e9b7ffd6968d3bfa0ce16')
+                if (userIndex > -1) {
                     chatData.members.splice(userIndex, 1)
-                    setUserIdList(chatData.member)
+                    setUserIdList(chatData.members)
                 }
             }
         }

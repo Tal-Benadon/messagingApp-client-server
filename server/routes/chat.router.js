@@ -53,6 +53,19 @@ router.post('/create-draft', async (req, res) => {
     }
 })
 
+router.put('/update-draft', async (req, res) => {
+    try {
+        const userId = req.user
+        const draftId = req.body.draftId
+        const data = req.body
+        console.log(draftId);
+        const result = await chatService.updateDraft(userId, draftId, data)
+        res.send(result)
+    } catch (error) {
+        console.error(error);
+    }
+})
+
 router.put('/:chatId/send-draft', async (req, res) => {
     try {
         const userId = req.user
