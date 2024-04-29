@@ -24,6 +24,7 @@ import { usePopup } from '../../context/ModalContext';
 import api from '../../Helpers/api';
 import apiToastCall from '../../Helpers/apiToast';
 import { useRefresh } from '../../context/RefreshContext';
+import { useUser } from '../../context/UserContext';
 
 
 export default function MessagesChatPage() {
@@ -35,6 +36,7 @@ export default function MessagesChatPage() {
     const nav = useNavigate()
     const location = useLocation()
     const { setRefreshCount } = useRefresh()
+    const { user } = useUser()
 
 
 
@@ -69,11 +71,11 @@ export default function MessagesChatPage() {
 
     const createMsg = () => {
         const newMsg = {
-            sender: "Tal Ben Adon",
+            sender: user.fullName,
             content: msgForm.msgBox,
             date: dateTimeFormatting.translateDateToString(new Date()),
             hour: dateTimeFormatting.formatTime(new Date()),
-            senderId: "660e9b7ffd6968d3bfa0ce16"
+            senderId: user._id
         }
         return newMsg
     }
@@ -160,7 +162,7 @@ export default function MessagesChatPage() {
             <ConversationsTitle titleText={chatSubject} />
             <div className={styles.messages}>
                 {messagesList.map((data, index) => {
-                    return <React.Fragment key={index}><OpenedMessage userId={"660e9b7ffd6968d3bfa0ce16"} senderId={data.senderId} avatarImg={data.avatar} userName={data.sender} msg={data.content} hour={data.hour} date={data.date} />
+                    return <React.Fragment key={index}><OpenedMessage userId={user._id} senderId={data.senderId} avatarImg={data.avatar} userName={data.sender} msg={data.content} hour={data.hour} date={data.date} />
                         <hr className={styles.msgsHr} />
                     </React.Fragment>
 

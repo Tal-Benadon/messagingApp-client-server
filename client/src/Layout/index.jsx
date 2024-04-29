@@ -10,7 +10,7 @@ import LoginPage from '../pages/LoginPage'
 import Register from '../pages/Register'
 import ForgotPassword from '../pages/ForgotPassword'
 import NewMessagePage from '../pages/NewMessagePage'
-import DraftEditorPage from '../pages/DraftEditorPage'
+import AuthLayout from './AuthLayout'
 // import OpenedMessage from '../components/OpenedMessage'
 
 
@@ -20,9 +20,11 @@ export default function Layout() {
 
     return (
         <Routes>
-            <Route path='login' element={<LoginPage />} />
-            <Route path='register' element={<Register />} />
-            <Route path='forgot-password' element={<ForgotPassword />} />
+            <Route element={<AuthLayout />}>
+                <Route path='login' element={<LoginPage />} />
+                <Route path='register' element={<Register />} />
+                <Route path='forgot-password' element={<ForgotPassword />} />
+            </Route>
             <Route element={<MainSideBar />}>
                 <Route index element={<>home</>} />
                 <Route path='speed' element={<>speed?</>} />
@@ -33,7 +35,8 @@ export default function Layout() {
                 <Route path='messages' element={<MailboxSidebar />} >
                     <Route path='new-chat' element={<NewMessagePage />} />
                     <Route path=':chatType' element={<InboxMessagesList />}>
-                        <Route path='draft-edit/:chatId' element={<DraftEditorPage />} />
+                        {/* <Route path='draft-edit/:chatId' element={<DraftEditorPage />} /> */}
+                        <Route path='draft-edit/:chatId' element={<NewMessagePage />} />
                         <Route path=':chatId' element={<Content />} />
                     </Route>
                 </Route>

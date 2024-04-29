@@ -15,8 +15,8 @@ async function read(filter = {}, populate = false, select = '') {
     return data
 }
 
-async function readOne(filter) {
-    let data = await userModel.findOne({ ...filter, isActive: true })
+async function readOne(filter, select = '') {
+    let data = await userModel.findOne({ ...filter, isActive: true },).select(select)
     return data
 
 }
@@ -33,7 +33,7 @@ async function updateMany(filter, data) {
     return await userModel.updateMany(filter, data, { new: true })
 }
 
-async function readByFlags(id, flags = [], populate = {}, searchBy, page) {
+async function readByFlags({ id, flags = [], populate = {}, searchBy, page = 1 }) {
     console.log("flags", flags);
     let data = await userModel.findOne({ _id: id, isActive: true })
     if (!data?.chats) return {}
@@ -46,12 +46,11 @@ async function readByFlags(id, flags = [], populate = {}, searchBy, page) {
     }))
     if (populate.chats) data = await data.populate('chats.chat')
     if (populate.users) data = await data.populate({ path: 'chats.chat.members', select: "fullName avatar _id" })
-
     if (searchBy) {
         searchBy = searchBy.toLowerCase()
         data.chats = data.chats.filter(chat => {
             chat.chat.subject.toLowerCase().includes(searchBy) ||
-                chat.chat.emmbers.find(mem => mem.fullName.toLowerCase().includes(searchBy))
+                chat.chat.members.find(mem => mem.fullName.toLowerCase().includes(searchBy))
         })
     }
     if (!data) return {}
@@ -62,6 +61,7 @@ async function readByFlags(id, flags = [], populate = {}, searchBy, page) {
         const to = from + 10
         data.chats = data.chats.slice(from, to)
     }
+    // console.log(data);
     return { chats: data.chats, pages }
 }
 

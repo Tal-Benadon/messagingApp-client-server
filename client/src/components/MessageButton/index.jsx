@@ -5,7 +5,9 @@ export default function MessageButton({ newChat, wrap = false, title, icon = '',
     return (
         wrap ? <button type={type} onClick={handleClick} className={styles.buttonContainer} style={{ width: 'fit-content' }}>
             <div>{title}</div>
-            <div className={styles.icon}>{icon}</div>
+            {icon ?
+                <div className={styles.icon}>{icon}</div> : ''
+            }
         </button> :
             <button type={type} onClick={handleClick} className={styles.buttonContainer} >
                 <div className={styles.icon}>{icon}</div>

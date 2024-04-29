@@ -2,12 +2,20 @@ import React, { useState } from 'react'
 import styles from './styles.module.css'
 import { IoCloseCircleOutline } from "react-icons/io5";
 
-export default function PopUp({ action, onClose, children, subContent, show }) {
+export default function PopUp({ action, negativeAction, onClose, children, subContent, show }) {
 
     const handleConfirmClick = (action, onClose) => {
         if (action) {
 
             action()
+        }
+
+        onClose()
+    }
+
+    const handleCloseClick = (negativeAction, onClose) => {
+        if (negativeAction) {
+            negativeAction()
         }
         onClose()
     }
@@ -31,7 +39,7 @@ export default function PopUp({ action, onClose, children, subContent, show }) {
             </div>
             <div className={styles.modalButtons}>
                 <button className={styles.confirm} onClick={() => handleConfirmClick(action, onClose)}>Confirm</button>
-                <button onClick={onClose} className={styles.deny}>Close</button>
+                <button onClick={() => handleCloseClick(negativeAction, onClose)} className={styles.deny}>Close</button>
             </div>
         </div>
     )

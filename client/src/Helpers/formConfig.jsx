@@ -24,7 +24,7 @@ const formConfig = {
             }
         },
         submit: {
-            label: 'Login',
+            label: 'Sign In',
             type: 'submit',
             icon: () => <RiLoginCircleLine />,
             wrap: true
@@ -32,22 +32,13 @@ const formConfig = {
     },
     register: {
         fields: {
-            firstName: {
-                label: 'First Name',
+            fullName: {
+                label: 'Full Name',
                 type: 'text',
                 initialValue: '',
                 validation: {
                     require: true,
-                    message: 'First name is required'
-                },
-            },
-            lastName: {
-                label: 'Last Name',
-                type: 'text',
-                initialValue: '',
-                validation: {
-                    require: true,
-                    message: 'Last name is required'
+                    message: 'Full name is a required field'
                 },
             },
             email: {

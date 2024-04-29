@@ -1,15 +1,16 @@
 import React from 'react'
 
 export default function messageFormatting(membersList, userId) {
-    if (membersList.length === 1) {
-        return "No recepients yet"
-    }
-    console.log(membersList);
-    console.log(membersList[1]._id);
-    console.log(userId);
-
 
     const noUserMemberList = membersList.filter(member => member._id !== userId)
+    if (noUserMemberList.length < 1) {
+        return "No recepients yet"
+    }
+    // console.log(membersList);
+    // console.log(membersList[1]._id);
+    // console.log(userId);
+
+
 
     const extraMembers = noUserMemberList.length - 2
     console.log(noUserMemberList);

@@ -10,16 +10,19 @@
     }
 }
 
-.whitePadding {
+/* .whitePadding {
     background-color: white;
     padding: 1.2rem;
     display: flex;
     flex-direction: column;
     height: 100vh;
-}
+} */
 
 .padding {
     padding: 1.2rem 0 1.2rem 0;
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
 }
 
 .messagesListContainer {
@@ -46,4 +49,11 @@
 .topHr {
     border: 0.5px solid #D9DDE8;
     width: 100%;
+}
+
+.paginationBtn {
+    background-color: var(--button-color);
+    color: white;
+    border-radius: 7px;
+    padding: 10px 0;
 }

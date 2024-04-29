@@ -9,17 +9,30 @@ import messageFormatting from '../../Helpers/messageFormatting'
 import dateTimeFormatting from '../../Helpers/dateTimeFormatting'
 import { Outlet } from 'react-router-dom/dist/umd/react-router-dom.development'
 import { useRefresh } from '../../context/RefreshContext'
+import LoadingSpinner from '../../components/LoadingSpinner'
+import { useUser } from '../../context/UserContext'
 export default function InboxMessagesList() {
     const [chatsList, setChatsList] = useState([])
     const { refreshCount } = useRefresh()
     const { chatType } = useParams()
+    const [page, setPage] = useState(1)
+    const [dataPage, setDataPage] = useState(0)
+    const [isLoading, setIsLoading] = useState(false)
+    const { user } = useUser()
+    useEffect(() => {
+        setPage(1)
+    }, [chatType])
+
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await apiCall({ method: "GET", url: `chat/inbox/${chatType}` })
-                const chatList = response.map(chat => {
+                const response = await apiCall({ method: "GET", url: `chat/inbox/${chatType}/${page}` })
+                console.log(response);
+                setDataPage(response.pages)
+                const chatList = response.chats.map(chat => {
                     return {
-                        namesTitle: messageFormatting(chat.chat.members, '660e9b7ffd6968d3bfa0ce16'),
+                        namesTitle: messageFormatting(chat.chat.members, user._id),
                         subject: chat.chat.subject,
                         subjectInitial: chat.chat.subject.charAt(0),
                         lastHour: dateTimeFormatting.formatTime(chat.chat.msg[chat.chat.msg.length - 1].date),
@@ -38,8 +51,29 @@ export default function InboxMessagesList() {
         fetchData()
     }, [chatType, refreshCount])
 
-    console.log(chatType);
-    console.log(chatsList);
+    const handleOnClick = async () => {
+        setIsLoading(true)
+        setPage(prev => prev + 1)
+
+        const response = await apiCall({ method: "GET", url: `chat/inbox/${chatType}/${page + 1}` })
+        console.log(response);
+        const chatList = response.chats.map(chat => {
+            return {
+                namesTitle: messageFormatting(chat.chat.members, user._id),
+                subject: chat.chat.subject,
+                subjectInitial: chat.chat.subject.charAt(0),
+                lastHour: dateTimeFormatting.formatTime(chat.chat.msg[chat.chat.msg.length - 1].date),
+                chatId: chat.chat._id,
+                isRead: chat.isRead,
+                isFavorite: chat.isFavorite
+            }
+        });
+        setChatsList(prev => [...prev, ...chatList])
+        setIsLoading(false)
+    }
+
+    // console.log(chatType);
+    // console.log(chatsList);
 
     return (
         <div className={styles.msgInnerLayout}>
@@ -62,6 +96,9 @@ export default function InboxMessagesList() {
                                 isFavorite={data.isFavorite}
                             />
                         })}
+                        {page == dataPage ? '' :
+                            <button className={styles.paginationBtn} onClick={handleOnClick}>{isLoading ? <LoadingSpinner /> : 'Show more'}</button>
+                        }
                     </div>
                 </div>
             </div>

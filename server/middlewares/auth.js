@@ -1,12 +1,58 @@
-
-
+const jwt = require('jsonwebtoken');
+const userController = require('../DL/controllers/user.controller')
+const secret = process.env.SECRET
+const decodeToken = (token) => jwt.verify(token, secret)
 async function auth(req, res, next) {
     try {
-        req.user = { _id: "660e9b7ffd6968d3bfa0ce16" }
+        const tokenBearer = req.headers.authorization
+        console.log({ tokenBearer });
+        const token = tokenBearer.replace("Bearer ", "")
+        const decodedToken = decodeToken(token, secret)
+        console.log("hi");
+        req.user = decodedToken._id
         next()
     } catch (error) {
-        res.sendStatus(401)
+        console.error(error);
+        if (error instanceof jwt.TokenExpiredError) {
+            return "Expired Token"
+        } else {
+            res.sendStatus(401)
+        }
+
     }
 }
 
-module.exports = { auth }
+async function tokenCheck(req, res, next) {
+    try {
+        const tokenBearer = req.headers.authorization
+        const token = tokenBearer.replace("Bearer ", "")
+        const payload = decodeToken(token, secret)
+
+        next()
+    } catch (error) {
+        if (error instanceof jwt.TokenExpiredError) {
+            return "Expired Token"
+        } else {
+            res.sendStatus(401)
+        }
+
+    }
+}
+
+const tokenToUser = async (authorization) => {
+    try {
+        const tokenBearer = authorization
+        const token = tokenBearer.replace("Bearer ", "")
+        const payload = decodeToken(token, secret)
+        const data = await userController.readOne({ _id: payload._id }, '-password -chats')
+        console.log(data);
+        return data
+    } catch (error) {
+        console.error(error);
+        if (error instanceof jwt.TokenExpiredError) {
+            return "Expired Token"
+        }
+    }
+}
+
+module.exports = { auth, tokenToUser, tokenCheck }

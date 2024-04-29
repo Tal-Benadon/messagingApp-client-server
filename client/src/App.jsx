@@ -6,7 +6,7 @@ import { usePopup } from './context/ModalContext';
 import PopUp from './components/PopUp';
 import Backdrop from './components/Backdrop';
 export default function App() {
-  const { showPopUp, hidePopup, popupContent, popupAction, popupSubContent, setShowPopup } = usePopup()
+  const { showPopUp, hidePopup, popupContent, popupAction, popupSubContent, setShowPopup, popupCloseAction } = usePopup()
   // console.log(import.meta.env.VITE_API_URL);
 
   return (
@@ -14,7 +14,7 @@ export default function App() {
       <div className='appConfinement'>
 
         <Backdrop show={showPopUp} />
-        <PopUp show={showPopUp} onClose={hidePopup} action={popupAction} subContent={popupSubContent} >
+        <PopUp show={showPopUp} onClose={hidePopup} action={popupAction} subContent={popupSubContent} negativeAction={popupCloseAction}>
           {popupContent}
         </PopUp>
         <Layout />

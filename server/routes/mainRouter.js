@@ -6,6 +6,6 @@ const userRouter = require('./user.router')
 // const messageRouter = require('./message.router')
 // const app = express()
 
-mainRouter.use('/user', auth, userRouter)
+mainRouter.use('/user', userRouter)
 mainRouter.use('/chat', auth, chatRouter)
 module.exports = mainRouter

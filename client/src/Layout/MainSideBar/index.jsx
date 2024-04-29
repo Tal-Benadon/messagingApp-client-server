@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styles from './styles.module.css'
 import { TiDeviceDesktop } from "react-icons/ti";
 import { SlSpeedometer } from "react-icons/sl";
@@ -11,9 +11,20 @@ import { BsBarChartFill } from "react-icons/bs";
 import { BiSolidVideo } from "react-icons/bi";
 import SideBarsButton from '../../components/SideBarsButton';
 import defaultImg from '../../assets/defaultImg.jpg'
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
+import { useUser } from '../../context/UserContext';
+import LoginPage from '../../pages/LoginPage';
 export default function MainSideBar() {
+    const nav = useNavigate()
+    if (!localStorage.mailBoxToken) {
+        return (
+            nav('/login')
+        )
+    }
 
+
+
+    const { user } = useUser()
     const sideBarButtonData = [
         { icon: <SlSpeedometer />, to: 'speed' }
         , { icon: <BiTask />, to: 'task' },
@@ -33,7 +44,7 @@ export default function MainSideBar() {
                         return <SideBarsButton key={index} icon={data.icon} to={data.to} />
                     })}
                 </div>
-                <img src={defaultImg} className='avatarImg' alt="User Image" />
+                <img src={user.avatar ? user.avatar : defaultImg} className='avatarImg' alt="User Image" />
             </div>
             <Outlet />
         </div>

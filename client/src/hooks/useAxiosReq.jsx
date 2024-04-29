@@ -18,6 +18,10 @@ export default function useAxiosReq({ url, body, method, defaultData }) {
             setLoading(false)
         }
     }
-    useEffect(() => { fetchData() }, [])
+    useEffect(() => {
+        if (url) {
+            fetchData()
+        }
+    }, [])
     return { data, loading, error }
 }

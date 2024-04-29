@@ -12,11 +12,11 @@ let funcs = {
 
 
 //================================================ Template
-async function getChats(userId, flag) {
+async function getChats({ userId, flag, page = 1 }) {
     if (!funcs[flag]) throw "you've been thrown"
-    let { chats } = await userController.readByFlags(userId, funcs[flag], { chats: true, users: true })
-
-    return chats
+    let { chats, pages } = await userController.readByFlags({ id: userId, flags: funcs[flag], page, populate: { chats: true, users: true } })
+    // console.log(chats);
+    return { chats, pages }
 }
 //================================================
 
@@ -81,7 +81,9 @@ async function createDraft(userId, data) {
     try {
         data.members = [...data.members, userId]
         const newDraft = await createChat(userId, data)
-        console.log("newDraft", newDraft);
+        // console.log("newDraft", newDraft);
+        console.log('Im New Draft ID', newDraft._id);
+        console.log('Im USER IDDD', userId);
         const updateDraftTrue = await moveToDraft(newDraft._id, userId)
 
         return {
@@ -97,7 +99,9 @@ async function createDraft(userId, data) {
 async function updateDraft(userId, draftId, data) {
     try {
         console.log("data", data);
+        console.log("draftId", draftId);
         const chat = await chatController.readOne({ _id: draftId })
+        console.log(chat);
         if (!data.subject && data.members.length === 0 && !chat.msg.content) {
             deleteDraft(userId, chat._id)
             return 'Draft Deleted'
@@ -236,14 +240,9 @@ async function deleteDraft(userId, chatId) {
 
 async function moveToDraft(chatId, userId) {
     try {
-        let user = await userController.readOne(userId)
-        console.log("NEWDRAFTID", chatId.toString());
-        // const chatsId = user.chats.forEach(chat => {
-        //     console.log(chat.chat.toString());
-        // })
+        let user = await userController.readOne({ _id: userId })
+        console.log(user);
         user.chats.find(chat => chat.chat.toString() === chatId.toString()).draft = true
-        console.log("hi im chat", user);
-        // user.chats.find(chat => chat.chat.toString() === chatId).draft = true
         userController.save(user)
         return {
             success: true

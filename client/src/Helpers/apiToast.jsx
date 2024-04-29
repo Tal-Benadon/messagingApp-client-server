@@ -13,7 +13,7 @@ async function apiToastCall({ method, url, body, pending, success, error }) {
             url,
             data: body,
             headers: {
-                Authorization: localStorage.token || ''
+                Authorization: `Bearer ${localStorage.mailBoxToken}` || ''
             }
         }
 

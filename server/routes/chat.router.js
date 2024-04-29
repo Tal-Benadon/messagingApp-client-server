@@ -1,15 +1,21 @@
 const express = require('express')
 const router = express.Router()
 const chatService = require('../BL/chat.service')
+const { auth } = require('../middlewares/auth')
 
 
-router.get('/inbox/:flag', async (req, res) => {
+router.get('/inbox/:flag/:page', async (req, res) => {
     try {
         let flag = req.params.flag
         const userId = req.user
         console.log(userId);
-        let result = await chatService.getChats(userId, flag)
+        let page = req.params.page
+        if (!req.params.page) {
+            page = 1
+        }
+        let result = await chatService.getChats({ userId, flag, page })
         res.send(result)
+        // console.log(flag, result);
     } catch (error) {
         console.error(error);
     }
@@ -69,10 +75,9 @@ router.put('/update-draft', async (req, res) => {
 router.put('/:chatId/send-draft', async (req, res) => {
     try {
         const userId = req.user
-        const chatId = '66115f43f4fafb5258259639'
 
 
-        req.params = chatId //from params? from body?
+        chatId = req.params.chatId //from params? from body?
         const result = await chatService.sendDraft(userId, chatId)
         res.send(result)
     } catch (error) {

@@ -1,14 +1,25 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import InputWrapper from '../InputWrapper'
 import styles from './styles.module.css'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { FaFileImage } from "react-icons/fa6";
 import formConfig from '../../Helpers/formConfig.jsx'
 import MessageButton from '../MessageButton';
 import MessageInputBox from '../MessageInputBox/index.jsx'
+import google from '../../assets/google.svg'
+import apiCall from '../../Helpers/api.jsx';
+import apiToastCall from '../../Helpers/apiToast.jsx';
+import { useUser } from '../../context/UserContext.jsx';
 export default function Form({ formType }) {
     const config = formConfig[formType]
     const [formTitle, setFormTitle] = useState('')
-
+    const [fileName, setFileName] = useState('Upload an Image')
+    const { setUser } = useUser()
+    const fileInputRef = useRef(null)
+    const nav = useNavigate()
+    const uploadClick = () => {
+        fileInputRef.current.click()
+    }
     useEffect(() => {
         if (formDetails) {
             const formDetails = formTypeSwitchCase(formType)
@@ -17,26 +28,141 @@ export default function Form({ formType }) {
         }
     }, [formType])
 
-    const [formState, setFormState] = useState(() =>
+    const initialStateRef = useRef(Object.keys(config.fields).reduce((accumulator, field) => {
+        accumulator[field] = config.fields[field].initialValue;
+
+        return accumulator
+    }, { file: null }))
+
+    const [formState, setFormState] = useState(initialStateRef.current)
+
+    const [errorForm, setErrorForm] = useState(() =>
         Object.keys(config.fields).reduce((accumulator, field) => {
             accumulator[field] = config.fields[field].initialValue;
-            console.log(accumulator);
+
             return accumulator
         }, {})
     )
+    const validateLogin = (newData) => {
+        const errors = {}
+        const { email, password } = newData
+        if ((password === '')) {
+            errors.password = 'Required field'
+        }
+        if (email === '') {
+            errors.email = 'Required field'
+        } else if (!email.includes("@") || !email.includes(".")) {
+            errors.email = 'Not a valid email'
+        }
+        return errors
+    }
+
+    const validateRegisterForm = (newData) => {
+        const errors = {}
+        const { password, confirmPassword, email, fullName } = newData
+
+        const passRegex = /^(?=.*[a-zA-Z])(?=.*\d).{8,}$/;
+
+        if ((!passRegex.test(password))) {
+            errors.password = 'Password must be at least 8 characters and include a number'
+        } else if ((password === '')) {
+            errors.password = 'Required field'
+        }
+
+        if (confirmPassword !== password) {
+            errors.confirmPassword = 'Passwords must be identical'
+        } else if (confirmPassword == '') {
+            errors.confirmPassowrd = 'Required field'
+
+
+        } if (fullName === '') {
+            errors.fullName = 'Required field'
+        }
+        if (email === '') {
+            errors.email = 'Required field'
+        } else if (!email.includes("@") || !email.includes(".")) {
+            errors.email = 'Not a valid email'
+        }
+        return errors
+    }
 
     const handleChange = (event) => {
-        const { name, value } = event.target
-        setFormState((prev) => ({ ...prev, [name]: value }))
+        const { name, value, type, files } = event.target
+        if (type === 'file') {
+            if (files.length > 0) {
+                setFormState(prev => ({ ...prev, [name]: files[0] }))
+                setFileName(files[0].name)
+            } else {
+                setFormState(prev => ({ ...prev, [name]: null }));
+                setFileName('Upload an Image');
+            }
+
+        } else {
+            setFormState(prev => ({ ...prev, [name]: value }))
+            setErrorForm(oldErrors => ({ ...oldErrors, [name]: '' }))
+        }
+
+    }
+
+    const handleRemoveImg = () => {
+        setFormState(prev => ({
+            ...prev,
+            file: null
+        }))
+        setFileName('Upload an Image')
+    }
+
+    const handleGoogleClick = () => {
+        console.log("Google");
     }
 
 
 
-
-
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault()
-        console.log(formState);
+        switch (formType) {
+            case 'register':
+                const errors = validateRegisterForm(formState)
+                if (Object.keys(errors).length === 0) {
+                    const formData = new FormData();
+                    Object.entries(formState).forEach(([key, value]) => {
+                        if (value instanceof File) {
+                            formData.append(key, value, value.name)
+                        } else {
+                            formData.append(key, value)
+                        }
+                    });
+                    const result = await apiCall({ method: "POST", url: `user/register`, body: formData })
+                    console.log(result);
+                    setFormState(initialStateRef.current)
+                    setFileName('Upload an Image');
+                } else {
+
+                    setErrorForm(errors)
+                }
+                break;
+            case 'login':
+                const loginErrors = validateLogin(formState)
+                if (Object.keys(loginErrors.length === 0)) {
+                    const formData = new FormData(event.target)
+                    const body = Object.fromEntries(formData)
+                    // console.log(body);
+                    const { data } = await apiToastCall({ method: "POST", url: "user/login", body: body, pending: "Signing in...", success: "Sign in successful", error: "Login failed" })
+                    const { token, user } = data
+                    console.log(token);
+                    console.log(user);
+                    setUser(user)
+                    localStorage.mailBoxToken = token
+                    localStorage.mailBoxId = user._id
+                    nav('/')
+                }
+                break;
+            default:
+                break;
+        }
+
+
+
     }
 
     const formTypeSwitchCase = (formType) => {
@@ -44,40 +170,77 @@ export default function Form({ formType }) {
         switch (formType) {
             case 'login':
                 return {
-                    title: 'Login',
+                    title: 'Welcome to Mailbox',
                     content: (<div className={styles.loginBottom} >
-                        <MessageButton wrap={config.submit.wrap}
+                        <div>
+                            <Link className={styles.forgotLinkLog} to={'/forgot-password'}>Forgot Password?</Link>
+                        </div>
+                        <MessageButton
+                            wrap={config.submit.wrap}
                             icon={config.submit.icon()}
                             type={config.submit.type}
                             title={config.submit.label} />
-                        <Link to={'/forgot-password'}>Forgot Password?</Link>
-                    </div>),
-                    extraContent: <p className={styles.registerTxt}>
-                        Don't have an account? <Link to={'/register'}>
-                            Register</Link></p>
+                        <div className={styles.registerTxt}>
+                            <p >
+                                Don't have an account?</p>{' '}<Link to={'/register'}>
+                                Register Here</Link>
+                        </div>
+                        <div className={styles.lineWithText}>
+                            <div className={styles.line}></div>
+                            <span className={styles.lineText}>OR</span>
+                            <div className={styles.line}></div>
+                        </div>
+                        <div className={styles.googleWrap}>
+                            <button type='button' className={styles.googleLogin} onClick={handleGoogleClick}>
+                                <img src={google} alt="Google Icon" className={styles.googleIcon} />
+                                Sign In with Google
+                            </button>
+                        </div>
+                    </div>)
                 }
             case 'register':
                 return {
-                    title: 'Your first Mailbox is here',
-                    content: (<div><MessageButton
-                        icon={config.submit.icon()}
-                        title={config.submit.label}
-                        type={config.submit.type}
-                    />
-                        Already have an account? <Link to={'/login'}>Log in</Link>
-                        <br />
-                        By registering, you agree to out <Link to={'/terms'}>Terms of Use</Link>
+                    title: 'Sign up here',
+                    top: 'Type your information below and we will take care of the rest',
+                    content: (<div className={styles.registerContent}>
+                        <div className={styles.fileUploadContainer}>
+                            <p className={styles.uploadText}>Optional:</p>
+                            <input type="file" name='file' accept='image/*' ref={fileInputRef} onChange={handleChange} style={{ display: 'none' }} />
+                            <div className={styles.uploadBtn}>
+                                <button title='Upload profile image' type='button' onClick={uploadClick} className={styles.icon}><FaFileImage /></button>
+                                {fileName && <div className={styles.fileNameContainer}>
+                                    <p className={styles.fileName}>{fileName}</p></div>}
+                                {fileName && <button type='button' onClick={handleRemoveImg}>x</button>}
+                            </div>
+                        </div>
+                        <div className={styles.btnDiv}>
+                            <MessageButton
+                                icon={config.submit.icon()}
+                                title={config.submit.label}
+                                type={config.submit.type}
+                                wrap={config.submit.wrap}
+                            />
+                        </div>
+                        <div className={styles.bottomLinks}>
+                            <p className={styles.linkText}>Already have an account?</p><Link to={'/login'}>Log in</Link>
+                        </div>
+                        <div className={styles.bottomLinks}>
+                            <p className={styles.linkText}>By registering, you agree to out</p> <Link to={'/terms'}>Terms of Use</Link>
+                        </div>
                     </div>),
                 }
             case 'forgotPassword':
                 return {
                     title: 'Recover Password',
-                    content: (<div className={styles.loginBottom}> <MessageButton
-                        title={config.submit.label}
-                        type={config.submit.type}
-                        wrap={config.submit.wrap}
-                    />
-                        <Link to={'/login'}>Back to Login</Link>
+                    content: (<div className={styles.loginBottom}>
+                        <div className={styles.backToLogin}>
+                            <Link to={'/login'}>Back to Login</Link>
+                        </div>
+                        <MessageButton
+                            title={config.submit.label}
+                            type={config.submit.type}
+                            wrap={config.submit.wrap}
+                        />
                     </div>),
                     top: <p>Enter your email address and we'll send you a link to reset your password</p>
                 }
@@ -97,17 +260,19 @@ export default function Form({ formType }) {
 
         <form onSubmit={handleSubmit} className={styles.formStyle}>
             <h1 className={styles.title}>{formTitle}</h1>
-            {formDetails?.top ? formDetails.top : ''}
+            {formDetails?.top ? <p className={styles.topText}>{formDetails.top}</p> : ''}
             {Object.entries(config.fields).map(([name, { label, type }]) => (
-                <div key={name} >
+                <div key={name} className={styles.inputContainer} >
                     <InputWrapper
-                        title={label}
+                        title={formType === 'register' ? `${label}*` : label}
                         name={name}
                         type={type}
                         value={formState[name]}
                         onChange={handleChange} />
+                    {errorForm[name] && <div className={styles.errorStyle}>{errorForm[name]}</div>}
                 </div>
             ))}
+
             {formDetails && formDetails.content}
             {formDetails && formDetails.extraContent}
         </form>
