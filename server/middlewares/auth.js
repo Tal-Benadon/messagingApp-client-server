@@ -5,10 +5,8 @@ const decodeToken = (token) => jwt.verify(token, secret)
 async function auth(req, res, next) {
     try {
         const tokenBearer = req.headers.authorization
-        console.log({ tokenBearer });
         const token = tokenBearer.replace("Bearer ", "")
         const decodedToken = decodeToken(token, secret)
-        console.log("hi");
         req.user = decodedToken._id
         next()
     } catch (error) {

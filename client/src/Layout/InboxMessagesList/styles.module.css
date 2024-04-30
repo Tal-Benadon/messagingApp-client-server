@@ -57,3 +57,10 @@
     border-radius: 7px;
     padding: 10px 0;
 }
+
+.noChats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8191A9;
+}

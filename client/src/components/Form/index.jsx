@@ -182,7 +182,7 @@ export default function Form({ formType }) {
                             title={config.submit.label} />
                         <div className={styles.registerTxt}>
                             <p >
-                                Don't have an account?</p>{' '}<Link to={'/register'}>
+                                Don't have an account?</p>{' '}<Link className={styles.link} to={'/register'}>
                                 Register Here</Link>
                         </div>
                         <div className={styles.lineWithText}>
@@ -222,10 +222,10 @@ export default function Form({ formType }) {
                             />
                         </div>
                         <div className={styles.bottomLinks}>
-                            <p className={styles.linkText}>Already have an account?</p><Link to={'/login'}>Log in</Link>
+                            <p className={styles.linkText}>Already have an account?</p><Link className={styles.link} to={'/login'}>Log in</Link>
                         </div>
                         <div className={styles.bottomLinks}>
-                            <p className={styles.linkText}>By registering, you agree to out</p> <Link to={'/terms'}>Terms of Use</Link>
+                            <p className={styles.linkText}>By registering, you agree to out</p> <Link className={styles.link} to={'/terms'}>Terms of Use</Link>
                         </div>
                     </div>),
                 }
@@ -234,7 +234,7 @@ export default function Form({ formType }) {
                     title: 'Recover Password',
                     content: (<div className={styles.loginBottom}>
                         <div className={styles.backToLogin}>
-                            <Link to={'/login'}>Back to Login</Link>
+                            <Link className={styles.link} to={'/login'}>Back to Login</Link>
                         </div>
                         <MessageButton
                             title={config.submit.label}

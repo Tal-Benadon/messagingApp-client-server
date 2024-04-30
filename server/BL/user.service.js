@@ -4,13 +4,14 @@ const dotenv = require('dotenv')
 const jwt = require('jsonwebtoken')
 const saltRound = 8
 const secret = process.env.SECRET
+
 async function getUser(filter = {}) {
     const user = await userController.read(filter)
     console.log(user);
     return user
 }
 
-const createToken = (payload) => jwt.sign(payload, secret, { expiresIn: '1d' })
+const createToken = (payload) => jwt.sign(payload, secret, { expiresIn: '1w' })
 const decodeToken = (token) => jwt.verify(token, secret)
 
 async function registerUser({ body, avatar = '' }) {

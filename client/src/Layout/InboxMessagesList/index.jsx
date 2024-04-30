@@ -96,8 +96,13 @@ export default function InboxMessagesList() {
                                 isFavorite={data.isFavorite}
                             />
                         })}
-                        {page == dataPage ? '' :
-                            <button className={styles.paginationBtn} onClick={handleOnClick}>{isLoading ? <LoadingSpinner /> : 'Show more'}</button>
+                        {
+                            dataPage === 0 ? <div className={styles.noChats}>{`No chats in "${chatType}" yet.`}</div> :
+                                (page === dataPage ? '' :
+                                    <button className={styles.paginationBtn} onClick={handleOnClick}>
+                                        {isLoading ? <LoadingSpinner /> : 'Show more'}
+                                    </button>
+                                )
                         }
                     </div>
                 </div>

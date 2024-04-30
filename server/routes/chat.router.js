@@ -122,11 +122,11 @@ router.delete('/:chatId/move-chat', async (req, res) => {
 
 router.delete('/:chatId/delete-chat', async (req, res) => {
     try {
-        // const userId = req.user
-        // const chatId = req.params.chatId
-        // const result = await chatService.removeChatFromUser(userId, chatId)
-        const result = "hi"
-        console.log('hi');
+        const userId = req.user
+        const chatId = req.params.chatId
+        const result = await chatService.removeChatFromUser(userId, chatId)
+        // const result = "hi"
+        // console.log('hi');
         res.send(result)
     } catch (error) {
         console.error(error);

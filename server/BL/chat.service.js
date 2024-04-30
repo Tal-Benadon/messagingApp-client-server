@@ -194,7 +194,8 @@ async function restoreChat(userId, chatId) {
 async function removeChatFromUser(userId, chatId) {
     try {
         const user = await userController.readOne({ _id: userId })
-        const chatToCheck = user.chats.find(chatSection => chatSection.chat.equals(chatId._id))
+
+        const chatToCheck = user.chats.find(chat => chat.chat.toString() === chatId.toString())
         if (chatToCheck.isDeleted) {
             const deleteFromUser = await userController.updateOne(
                 { _id: userId },

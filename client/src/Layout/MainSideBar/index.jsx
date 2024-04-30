@@ -16,11 +16,14 @@ import { useUser } from '../../context/UserContext';
 import LoginPage from '../../pages/LoginPage';
 export default function MainSideBar() {
     const nav = useNavigate()
-    if (!localStorage.mailBoxToken) {
-        return (
-            nav('/login')
-        )
-    }
+    useEffect(() => {
+        if (!localStorage.mailBoxToken) {
+            return (
+                nav('/login')
+            )
+        }
+    }, [])
+
 
 
 
