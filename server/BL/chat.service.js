@@ -255,7 +255,9 @@ async function moveToDraft(chatId, userId) {
 
 async function addToFavorite(userId, chatId) {
     try {
-        let user = await userController.readOne(userId)
+        console.log({ userId });
+        let user = await userController.readOne({ _id: userId })
+        console.log(user)
         user.chats.find(chat => chat.chat.toString() === chatId).isFavorite = true
         userController.save(user)
         return {
