@@ -25,6 +25,7 @@ import api from '../../Helpers/api';
 import apiToastCall from '../../Helpers/apiToast';
 import { useRefresh } from '../../context/RefreshContext';
 import { useUser } from '../../context/UserContext';
+import Loading from '../../components/Loading';
 
 
 export default function MessagesChatPage() {
@@ -33,6 +34,7 @@ export default function MessagesChatPage() {
     const [messagesList, setMessagesList] = useState([])
     const [chatSubject, setChatSubject] = useState('Chat Subject')
     const { togglePopup, hidePopup } = usePopup()
+    const [isLoading, setIsLoading] = useState(true)
     const nav = useNavigate()
     const location = useLocation()
     const { setRefreshCount } = useRefresh()
@@ -44,20 +46,27 @@ export default function MessagesChatPage() {
         const fetchData = async () => {
             try {
                 const response = await apiCall({ method: "GET", url: `chat/${chatId}/messages` })
-                const subject = response.subject
-                const chatMsgs = response.msg.map(msg => {
-                    return {
-                        avatar: msg.from.avatar,
-                        sender: msg.from.fullName,
-                        content: msg.content,
-                        hour: dateTimeFormatting.formatTime(msg.date),
-                        date: dateTimeFormatting.translateDateToString(msg.date),
-                        senderId: msg.from._id
-                    }
-                })
-                setMessagesList(chatMsgs)
-                setChatSubject(subject)
-                console.log(response);
+                if (response) {
+
+                    const subject = response.subject
+                    const chatMsgs = response.msg.map(msg => {
+                        return {
+                            avatar: msg.from.avatar,
+                            sender: msg.from.fullName,
+                            content: msg.content,
+                            hour: dateTimeFormatting.formatTime(msg.date),
+                            date: dateTimeFormatting.translateDateToString(msg.date),
+                            senderId: msg.from._id
+                        }
+                    })
+                    setMessagesList(chatMsgs)
+                    setChatSubject(subject)
+                    console.log(response);
+                    setTimeout(() => {
+
+                        setIsLoading(false)
+                    }, 1050);
+                }
 
             } catch (error) {
                 console.error(error);
@@ -159,15 +168,19 @@ export default function MessagesChatPage() {
 
             </div>
             <hr className={styles.topHr} />
-            <ConversationsTitle titleText={chatSubject} />
-            <div className={styles.messages}>
-                {messagesList.map((data, index) => {
-                    return <React.Fragment key={index}><OpenedMessage userId={user._id} senderId={data.senderId} avatarImg={data.avatar} userName={data.sender} msg={data.content} hour={data.hour} date={data.date} />
-                        <hr className={styles.msgsHr} />
-                    </React.Fragment>
+            {isLoading ? <Loading /> :
+                <>
+                    <ConversationsTitle titleText={chatSubject} />
+                    <div className={styles.messages}>
+                        {messagesList.map((data, index) => {
+                            return <React.Fragment key={index}><OpenedMessage userId={user._id} senderId={data.senderId} avatarImg={data.avatar} userName={data.sender} msg={data.content} hour={data.hour} date={data.date} />
+                                <hr className={styles.msgsHr} />
+                            </React.Fragment>
 
-                })}
-            </div>
+                        })}
+                    </div>
+                </>
+            }
             <form onSubmit={handleSubmit}>
                 <MessageInputBox onChange={handleOnChange} value={msgForm['msgBox']} name={'msgBox'} />
                 <div className={styles.footerContainer}>

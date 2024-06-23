@@ -10,7 +10,7 @@ import { SlPeople } from "react-icons/sl";
 import { BsBarChartFill } from "react-icons/bs";
 import { BiSolidVideo } from "react-icons/bi";
 import SideBarsButton from '../../components/SideBarsButton';
-import defaultImg from '../../assets/defaultImg.jpg'
+import defaultImg from '../../assets/defaultPlaceholder.webp'
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
 import LoginPage from '../../pages/LoginPage';

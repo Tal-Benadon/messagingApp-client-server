@@ -270,7 +270,7 @@ async function addToFavorite(userId, chatId) {
 
 async function removeFromFavorite(userId, chatId) {
     try {
-        let user = await userController.readOne(userId)
+        let user = await userController.readOne({ _id: userId })
         user.chats.find(chat => chat.chat.toString() === chatId).isFavorite = false
         userController.save(user)
         return {
