@@ -2,23 +2,10 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import { usePopup } from '../context/ModalContext'
 async function apiCall({ method, url, body }) {
-    // const { togglePopup } = usePopup()
-    // const getNewToken = async () => {
-    //     const userId = localStorage.mailBoxId
-    //     const { user, token } = apiCall({ method: "POST", url: "user/login", body: userId })
-    //     localStorage.mailBoxToken = token
-    //     localStorage.mailBoxId = user._id
-    //     setUser(user)
-    // }
 
-    // const logOut = () => {
-    //     removeItem(mailBoxToken)
-    //     removeItem(mailBoxId)
-    //     nav('/login')
-    // }
     console.log('apiCall \n', { method, url, body });
     try {
-        const { data } = await axios({
+        const data = await axios({
             method,
             baseURL: import.meta.env.VITE_API_URL,
             url,
@@ -27,17 +14,24 @@ async function apiCall({ method, url, body }) {
                 Authorization: `Bearer ${localStorage.mailBoxToken}` || ''
             }
         })
-        // console.log(data);
+        console.log(data);
         // if (data === 'Expired Token') {
-        //     togglePopup("Session Expired", "Do you wish to stay?", () => getNewToken(), () => logOut())
-
+        //     console.log("hi");
 
         // } else {
         return data
         // }
     } catch (error) {
         console.error(error);
-        throw error
+        if (error.response) {
+
+            return { status: error.response.status, data: error.response.data }
+        }
+        if (error.request) {
+            return { status: 500, data: { error: "No response received from server" } }
+        } else {
+            return { status: 500, data: { error: 'Error in setting up request' } };
+        }
     }
 }
 

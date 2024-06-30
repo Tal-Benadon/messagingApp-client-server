@@ -9,6 +9,9 @@ export const UserProvider = ({ children }) => {
         if (localStorage.mailBoxToken && !user._id) {
             const tokenToUser = async () => {
                 const user = await apiCall({ method: "GET", url: "user/token-to-user" })
+                if (user.status === 401) {
+                    // window.location.href = '/login'
+                }
                 console.log("tokenBecame:", user);
                 setUser(user)
             }

@@ -68,9 +68,15 @@ router.post('/userImg', upload.single('file'), (req, res) => {
 router.get('/token-to-user', async (req, res) => {
     try {
         let user = await tokenToUser(req.headers.authorization)
+        if (user === "Expired Token") {
+            return res.status(401).send({ error: "Token has expired" })
+        }
+        console.log(user);
         res.send(user)
     } catch (error) {
         console.log(error);
+        res.status(500).send({ error: "An error occurred while processing your request" })
+
     }
 })
 module.exports = router
