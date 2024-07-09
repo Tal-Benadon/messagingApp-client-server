@@ -20,6 +20,15 @@ export default function Form({ formType }) {
     const uploadClick = () => {
         fileInputRef.current.click()
     }
+
+    const getBase64 = (file) => {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = () => {
+            console.log(reader.result);
+        }
+    }
+
     useEffect(() => {
         if (formDetails) {
             const formDetails = formTypeSwitchCase(formType)
@@ -153,7 +162,7 @@ export default function Form({ formType }) {
                     console.log(user);
                     setUser(user)
                     localStorage.mailBoxToken = token
-                    localStorage.mailBoxId = user._id
+                    // localStorage.mailBoxId = user._id
                     nav('/')
                 }
                 break;

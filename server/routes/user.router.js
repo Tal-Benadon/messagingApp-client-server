@@ -2,18 +2,24 @@ const express = require('express')
 const router = express.Router()
 const userService = require('../BL/user.service')
 const upload = require('../middlewares/uploads')
+const fs = require('fs')
 const { tokenToUser } = require('../middlewares/auth')
 router.post('/register', upload.single('file'), async (req, res) => {
     try {
-        const avatar = req.file ? `${req.file.path}` : ''
+        const file = req.file
+        const fileStream = fs.createReadStream(file.path)
+        console.log(fileStream);
+
+
+
         const email = req.body.email
         const checkEmail = await userService.checkEmail(email)
         console.log(checkEmail);
         if (checkEmail === 'Email exists') {
             res.send({ success: 'Email exists' })
         }
-        const result = await userService.registerUser({ body: req.body, avatar })
-        res.send({ success: true })
+        // const result = await userService.registerUser({ body: req.body, avatar })
+        // res.send({ success: true })
     } catch (error) {
         console.error(error);
     }

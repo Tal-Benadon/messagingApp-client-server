@@ -3,31 +3,40 @@ import styles from './styles.module.css'
 import { TiDeviceDesktop } from "react-icons/ti";
 import { SlSpeedometer } from "react-icons/sl";
 import { BiTask } from "react-icons/bi";
-import { RxEyeOpen } from "react-icons/rx";
 import { GiEvilEyes } from "react-icons/gi";
 import { IoIosPeople } from "react-icons/io";
-import { SlPeople } from "react-icons/sl";
 import { BsBarChartFill } from "react-icons/bs";
 import { BiSolidVideo } from "react-icons/bi";
 import SideBarsButton from '../../components/SideBarsButton';
 import defaultImg from '../../assets/defaultPlaceholder.webp'
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
-import LoginPage from '../../pages/LoginPage';
+import apiCall from '../../Helpers/api';
 export default function MainSideBar() {
     const nav = useNavigate()
+
+    const { user, setUser } = useUser()
+
     useEffect(() => {
         if (!localStorage.mailBoxToken) {
             return (
                 nav('/login')
             )
         }
+        if (localStorage.mailBoxToken && !user._id) {
+            const tokenToUser = async () => {
+                const user = await apiCall({ method: "GET", url: "user/token-to-user" })
+                if (user.status === 401) {
+                    localStorage.removeItem('mailBoxToken')
+                    nav('/login')
+                }
+                console.log("tokenBecame:", user);
+                setUser(user)
+            }
+            tokenToUser()
+        }
     }, [])
 
-
-
-
-    const { user } = useUser()
     const sideBarButtonData = [
         { icon: <SlSpeedometer />, to: 'speed' }
         , { icon: <BiTask />, to: 'task' },
