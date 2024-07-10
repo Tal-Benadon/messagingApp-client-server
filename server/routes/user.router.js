@@ -4,13 +4,27 @@ const userService = require('../BL/user.service')
 const upload = require('../middlewares/uploads')
 const fs = require('fs')
 const { tokenToUser } = require('../middlewares/auth')
+const cloudinary = require('../cloudinary')
 router.post('/register', upload.single('file'), async (req, res) => {
     try {
         const file = req.file
-        const fileStream = fs.createReadStream(file.path)
-        console.log(fileStream);
-
-
+        let avatar = ''
+        if (file) {
+            const result = await new Promise((resolve, reject) => {
+                const uploadStream = cloudinary.uploader.upload_stream(
+                    { folder: 'profile-pictures' },
+                    (error, result) => {
+                        if (error) {
+                            return reject(error)
+                        }
+                        resolve(result)
+                    }
+                )
+                uploadStream.end(file.buffer)
+            })
+            console.log('File uploaded successfully:', result);
+            avatar = result.secure_url
+        }
 
         const email = req.body.email
         const checkEmail = await userService.checkEmail(email)
@@ -18,8 +32,9 @@ router.post('/register', upload.single('file'), async (req, res) => {
         if (checkEmail === 'Email exists') {
             res.send({ success: 'Email exists' })
         }
-        // const result = await userService.registerUser({ body: req.body, avatar })
-        // res.send({ success: true })
+
+        await userService.registerUser({ body: req.body, avatar })
+        res.send({ success: true })
     } catch (error) {
         console.error(error);
     }

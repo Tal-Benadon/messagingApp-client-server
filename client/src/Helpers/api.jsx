@@ -5,7 +5,7 @@ async function apiCall({ method, url, body }) {
 
     console.log('apiCall \n', { method, url, body });
     try {
-        const data = await axios({
+        const { data } = await axios({
             method,
             baseURL: import.meta.env.VITE_API_URL,
             url,

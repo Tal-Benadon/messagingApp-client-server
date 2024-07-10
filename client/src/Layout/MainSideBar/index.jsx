@@ -34,6 +34,7 @@ export default function MainSideBar() {
                 setUser(user)
             }
             tokenToUser()
+            console.log(user);
         }
     }, [])
 

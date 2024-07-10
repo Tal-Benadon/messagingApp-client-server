@@ -30,9 +30,8 @@ export default function InboxMessagesList() {
             try {
 
                 const response = await apiCall({ method: "GET", url: `chat/inbox/${chatType}/${page}` })
-                console.log(response);
                 if (response) {
-
+                    console.log('chats', response.chats);
                     setDataPage(response.pages)
                     const chatList = response.chats.map(chat => {
                         return {

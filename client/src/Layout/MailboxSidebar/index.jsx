@@ -29,7 +29,8 @@ export default function MailboxSidebar() {
         setUnreadChats(counter)
     }
     useEffect(() => {
-        if (data) {
+        if (data && data.status !== 404) {
+
             calculateUnreadNum()
         }
     }, [data])

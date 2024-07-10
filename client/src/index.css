@@ -37,6 +37,7 @@ li {
   border-radius: 50px;
   display: flex;
   align-items: center;
+  object-fit: cover;
 }
 
 .appConfinement {
@@ -49,11 +50,11 @@ li {
     align-items: center;
   }
 
-  .appConfinement>div {
-    /* max-width: 1900px; */
-    /* height: 900px; */
-    /* padding: 4rem; */
-  }
+  /* .appConfinement>div {
+    max-width: 1900px; 
+    height: 900px;
+     padding: 4rem;
+  } */
 }
 
 ::-webkit-scrollbar {
