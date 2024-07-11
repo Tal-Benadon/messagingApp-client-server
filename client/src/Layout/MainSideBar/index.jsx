@@ -57,7 +57,9 @@ export default function MainSideBar() {
                         return <SideBarsButton key={index} icon={data.icon} to={data.to} />
                     })}
                 </div>
-                <img src={user.avatar ? user.avatar : defaultImg} className='avatarImg' alt="User Image" />
+                <div className={styles.imgWrapper}>
+                    <img src={user.avatar ? user.avatar : defaultImg} className={`avatarImg ${styles.sideBarImg}`} alt="User Image" />
+                </div>
             </div>
             <Outlet />
         </div>
