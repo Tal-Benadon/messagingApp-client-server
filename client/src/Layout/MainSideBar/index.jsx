@@ -68,6 +68,9 @@ export default function MainSideBar() {
 
     const handleLogoutClick = () => togglePopup('Are you sure?', 'Do you wish to log out?', () => onLogOut())
 
+    const onSettingsClick = () => {
+        nav('/settings')
+    }
 
     const sideBarButtonData = [
         { icon: <SlSpeedometer />, to: 'speed' }
@@ -92,7 +95,7 @@ export default function MainSideBar() {
                 <div className={styles.imgWrapper} onClick={() => setIsOpen(!isOpen)} ref={menuRef}>
                     <img src={user.avatar ? user.avatar : defaultImg} className={`avatarImg ${styles.sideBarImg}`} alt="User Image" />
                     <ul className={`${styles.menu} ${isOpen ? styles.open : ''}`} ref={menuRef}>
-                        <li><i><IoMdSettings /></i>Settings</li>
+                        <li onClick={onSettingsClick}><i><IoMdSettings /></i>Settings</li>
 
                         <hr className={styles.hr} />
                         <li onClick={handleLogoutClick}><i><CiLogout /></i>Log Out</li>

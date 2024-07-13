@@ -11,6 +11,7 @@ import Register from '../pages/Register'
 import ForgotPassword from '../pages/ForgotPassword'
 import NewMessagePage from '../pages/NewMessagePage'
 import AuthLayout from './AuthLayout'
+import SettingsPage from '../pages/SettingsPage'
 // import OpenedMessage from '../components/OpenedMessage'
 
 
@@ -32,10 +33,10 @@ export default function Layout() {
                 <Route path='overview' element={<>overview?</>} />
                 <Route path='data' element={<>data?</>} />
                 <Route path='video' element={<>video?</>} />
+                <Route path='settings' element={<SettingsPage />} />
                 <Route path='messages' element={<MailboxSidebar />} >
                     <Route path='new-chat' element={<NewMessagePage />} />
                     <Route path=':chatType' element={<InboxMessagesList />}>
-                        {/* <Route path='draft-edit/:chatId' element={<DraftEditorPage />} /> */}
                         <Route path='draft-edit/:chatId' element={<NewMessagePage />} />
                         <Route path=':chatId' element={<Content />} />
                     </Route>
