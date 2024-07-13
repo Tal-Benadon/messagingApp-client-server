@@ -13,6 +13,7 @@ export default function SettingsPage() {
                 <p className={styles.imgText}>For this demo, you can change your profile picture</p>
                 <div className={styles.avatarContainer}>
                     <img className={styles.avatar} src={user.avatar} alt="user img" />
+                    <div className={styles.avatarOverlay}>Edit</div>
                 </div>
 
             </div>
