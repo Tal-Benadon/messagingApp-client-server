@@ -23,7 +23,7 @@ router.post('/register', upload.single('file'), async (req, res) => {
                 uploadStream.end(file.buffer)
             })
             console.log('File uploaded successfully:', result);
-            avatar = result.secure_url
+            avatar = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/v${result.version}/${result.public_id}.${result.format}`
         }
 
         const email = req.body.email
@@ -40,6 +40,17 @@ router.post('/register', upload.single('file'), async (req, res) => {
     }
 
 
+})
+
+router.put('/editAvatar', upload.single('file'), async (req, res) => {
+    try {
+        const file = req.file
+        if (file) {
+            console.log(file);
+        }
+    } catch (error) {
+        console.error(error)
+    }
 })
 
 router.post('/login', async (req, res) => {

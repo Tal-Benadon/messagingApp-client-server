@@ -21,14 +21,6 @@ export default function Form({ formType }) {
         fileInputRef.current.click()
     }
 
-    const getBase64 = (file) => {
-        const reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = () => {
-            console.log(reader.result);
-        }
-    }
-
     useEffect(() => {
         if (formDetails) {
             const formDetails = formTypeSwitchCase(formType)
