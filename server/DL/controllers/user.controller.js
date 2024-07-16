@@ -6,6 +6,7 @@ async function create(data) {
 }
 
 async function read(filter = {}, populate = false, select = '') {
+    console.log("fromController", select);
     let query = userModel.find(filter)
     if (populate)
         query = query.populate(populate)
@@ -16,7 +17,7 @@ async function read(filter = {}, populate = false, select = '') {
 }
 
 async function readOne(filter, select = '') {
-    let data = await userModel.findOne({ ...filter, isActive: true },).select(select)
+    let data = await userModel.findOne({ ...filter, isActive: true }).select(select)
     return data
 
 }

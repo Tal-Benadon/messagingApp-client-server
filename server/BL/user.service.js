@@ -1,14 +1,15 @@
 const userController = require('../DL/controllers/user.controller')
 const bcrypt = require('bcrypt')
+const cloudinary = require('../cloudinary')
 const dotenv = require('dotenv')
 const jwt = require('jsonwebtoken')
 const saltRound = 8
 const secret = process.env.SECRET
 
-async function getUser(filter = {}) {
-    const user = await userController.read(filter)
-    console.log(user);
-    return user
+async function getUser(filter = {}, select = '') {
+    const user = await userController.read(filter, false, select)
+
+    return user[0]
 }
 
 const createToken = (payload) => jwt.sign(payload, secret, { expiresIn: '1w' })
@@ -20,6 +21,37 @@ async function registerUser({ body, avatar = '' }) {
         const user = { fullName: body.fullName, email: body.email, password: hash, avatar }
         const newUser = await userController.create(user)
         console.log(newUser);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function editAvatar(userId, file) {
+    try {
+        console.log(userId, file);
+        const user = await getUser({ _id: userId }, '-chats')
+        const avatarUrl = user.avatar
+        const parts = avatarUrl.split('/')
+        if (parts.length > 9) {
+            throw new Error('Url does not have the expeted format')
+        }
+        const IdandFormat = parts[8]
+        const public_id = IdandFormat.split('.')[0]
+        console.log(public_id);
+        const result = await new Promise((resolve, reject) => {
+            const uploadStream = cloudinary.uploader.upload_stream(
+                { folder: 'profile-pictures' },
+                (error, result) => {
+                    if (error) {
+                        return reject(error)
+                    }
+                    resolve(result)
+                }
+            )
+            uploadStream.end(file.buffer)
+        })
+
+
     } catch (error) {
         console.error(error);
     }
@@ -81,4 +113,4 @@ async function getUsersEmails(userId, filter = {}) {
     }
 }
 
-module.exports = { getUser, getUsersEmails, registerUser, checkEmail, loginUser, refreshToken }
+module.exports = { getUser, getUsersEmails, registerUser, checkEmail, loginUser, refreshToken, editAvatar }

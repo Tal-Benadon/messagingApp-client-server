@@ -25,6 +25,9 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
 }
 
 
@@ -76,4 +79,15 @@
     color: white;
     font-size: 1rem;
     text-align: center;
+}
+
+.btnAnimation {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    pointer-events: none;
+}
+
+.active {
+    opacity: 1;
+    pointer-events: all;
 }

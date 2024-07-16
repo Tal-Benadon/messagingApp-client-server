@@ -3,7 +3,7 @@ const router = express.Router()
 const userService = require('../BL/user.service')
 const upload = require('../middlewares/uploads')
 const fs = require('fs')
-const { tokenToUser } = require('../middlewares/auth')
+const { tokenToUser, tokenCheck } = require('../middlewares/auth')
 const cloudinary = require('../cloudinary')
 router.post('/register', upload.single('file'), async (req, res) => {
     try {
@@ -42,14 +42,17 @@ router.post('/register', upload.single('file'), async (req, res) => {
 
 })
 
-router.put('/editAvatar', upload.single('file'), async (req, res) => {
+router.put('/editAvatar', tokenCheck, upload.single('file'), async (req, res) => {
     try {
         const file = req.file
         if (file) {
-            console.log(file);
+            const userId = req.userId
+            const result = await userService.editAvatar(userId, file)
+            res.send({ success: true })
         }
     } catch (error) {
         console.error(error)
+        res.status(400).send({ success: false, msg: 'An error occured' })
     }
 })
 

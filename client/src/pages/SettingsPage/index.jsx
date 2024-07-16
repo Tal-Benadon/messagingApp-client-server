@@ -1,6 +1,10 @@
 import React, { useRef, useState } from 'react'
 import styles from './styles.module.css'
 import { useUser } from '../../context/UserContext'
+import apiCall from '../../Helpers/api'
+import apiToastCall from '../../Helpers/apiToast'
+import MessageButton from '../../components/MessageButton'
+import { IoMdCheckmark } from "react-icons/io";
 export default function SettingsPage() {
     const [file, setFile] = useState()
     const [preview, setPreview] = useState()
@@ -29,6 +33,18 @@ export default function SettingsPage() {
         e.preventDefault()
         const formData = new FormData()
         formData.append('file', file)
+        try {
+            const res = await apiToastCall({
+                method: 'PUT',
+                url: 'user/editAvatar',
+                body: formData,
+                pending: 'Updating image...',
+                success: 'Image Updated!',
+            })
+            console.log(res);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     return (
@@ -43,6 +59,9 @@ export default function SettingsPage() {
                         <img className={styles.avatar} src={preview ? preview : user.avatar} alt="user img" />
                         <div className={styles.avatarOverlay}>Edit</div>
                     </button>
+                    <div className={`${styles.btnAnimation} ${preview ? styles.active : ''}`}>
+                        <MessageButton wrap title={`Confirm `} icon={<IoMdCheckmark />} type='submit' handleClick={handleSubmit} />
+                    </div>
                 </div>
 
             </div>

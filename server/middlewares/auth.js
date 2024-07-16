@@ -26,6 +26,7 @@ async function tokenCheck(req, res, next) {
         const token = tokenBearer.replace("Bearer ", "")
         const payload = decodeToken(token, secret)
 
+        req.userId = payload._id
         next()
     } catch (error) {
         if (error instanceof jwt.TokenExpiredError) {
