@@ -24,9 +24,10 @@ async function getChats({ userId, flag, page = 1 }) {
 async function createSendChat(body, userId) {
     try {
         const recipients = body.members
-        console.log(recipients);
+        // console.log({ recipients });
+        // console.log(recipients);
         body.members = [...body.members, userId]
-
+        // console.log("body members", body.members);
         const newChat = await createChat(userId, body)
 
         const result = await updateAfterSendStatus(userId, newChat._id, recipients)
@@ -80,6 +81,7 @@ async function updateAfterSendStatus(userId, chatId, recipients) {
 async function createDraft(userId, data) {
     try {
         data.members = [...data.members, userId]
+        console.log("dataMembers", data.members);
         const newDraft = await createChat(userId, data)
         // console.log("newDraft", newDraft);
         console.log('Im New Draft ID', newDraft._id);
@@ -129,7 +131,9 @@ async function sendDraft(userId, chatId) {
             }
         )
         const chat = await chatController.readOne({ _id: chatId }, { msgs: true })
+        console.log("im In SEND DRAFT", chat.members);
         const membersToUpdate = chat.members.filter(member => !member._id.equals(userId._id))
+        console.log("im In SEND DRAFT 2", chat.members);
 
 
         const updateAddedMembers = await userController.updateMany(
@@ -284,7 +288,8 @@ async function removeFromFavorite(userId, chatId) {
 async function readChat(userId, chatId) {
     try {
         console.log(chatId);
-        let user = await userController.readOne(userId)
+        let user = await userController.readOne({ _id: userId })
+        console.log({ user });
         user.chats.find(chat => chat.chat.toString() === chatId).isRead = true
         userController.save(user)
         return {

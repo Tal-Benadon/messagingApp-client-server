@@ -134,9 +134,22 @@ export default function Form({ formType }) {
                         }
                     });
                     const result = await apiCall({ method: "POST", url: `user/register`, body: formData })
-                    console.log(result);
-                    setFormState(initialStateRef.current)
-                    setFileName('Upload an Image');
+                    const isSuccess = result.success
+                    console.log({ result });
+                    if (isSuccess === true) {
+                        setFormState(initialStateRef.current)
+                        setFileName('Upload an Image');
+                        const formDataInfo = Object.fromEntries(formData)
+
+                        const email = formDataInfo.email
+                        const password = formDataInfo.password
+                        const body = { email, password }
+                        const { data } = await apiToastCall({ method: "POST", url: "user/login", body: body, pending: "Signing you in..", success: "Welcome!", error: "Login failed" })
+                        const { token, user } = data
+                        setUser(user)
+                        localStorage.mailBoxToken = token
+                        nav('/')
+                    }
                 } else {
 
                     setErrorForm(errors)
@@ -147,14 +160,14 @@ export default function Form({ formType }) {
                 if (Object.keys(loginErrors.length === 0)) {
                     const formData = new FormData(event.target)
                     const body = Object.fromEntries(formData)
-                    // console.log(body);
+
                     const { data } = await apiToastCall({ method: "POST", url: "user/login", body: body, pending: "Signing in...", success: "Sign in successful", error: "Login failed" })
                     const { token, user } = data
                     console.log(token);
                     console.log(user);
                     setUser(user)
                     localStorage.mailBoxToken = token
-                    // localStorage.mailBoxId = user._id
+
                     nav('/')
                 }
                 break;

@@ -20,7 +20,7 @@ async function registerUser({ body, avatar = '' }) {
         const hash = bcrypt.hashSync(body.password, saltRound)
         const user = { fullName: body.fullName, email: body.email, password: hash, avatar }
         const newUser = await userController.create(user)
-        console.log(newUser);
+        return newUser
     } catch (error) {
         console.error(error);
     }
@@ -28,16 +28,25 @@ async function registerUser({ body, avatar = '' }) {
 
 async function editAvatar(userId, file) {
     try {
-        console.log(userId, file);
-        const user = await getUser({ _id: userId }, '-chats')
+
+        //*** Pull user from database for old image deletion and new image insertion ***//
+        const user = await getUser({ _id: userId }, '-password -chats')
         const avatarUrl = user.avatar
+
+        //*** Separation of avatar url for Cloudinary public_id identification ***//
+        //*** The url is usually composed of 9 parts when split by a "/", if this is not anymore the case, function need to be updated  ***/
         const parts = avatarUrl.split('/')
-        if (parts.length > 9) {
+
+        if (parts.length !== 9 && parts.length !== 1) {
             throw new Error('Url does not have the expeted format')
         }
+        const folderName = parts[7]
         const IdandFormat = parts[8]
-        const public_id = IdandFormat.split('.')[0]
-        console.log(public_id);
+        const folderAndId = [folderName, IdandFormat]
+        const oldPublic_id = folderAndId.join('/').split('.')[0]
+        console.log({ oldPublic_id });
+
+        //*** Uploading the new image to Cloudinary using upload stream with buffer ***/
         const result = await new Promise((resolve, reject) => {
             const uploadStream = cloudinary.uploader.upload_stream(
                 { folder: 'profile-pictures' },
@@ -50,10 +59,46 @@ async function editAvatar(userId, file) {
             )
             uploadStream.end(file.buffer)
         })
+        const newPublicId = result.public_id
+
+        /*** If the cloudinary upload is successful, update the new image and delete the previous from Cloudinary ***/
+        if (result && newPublicId) {
+
+            if (parts.length !== 1) {
+                const deleteResult = await new Promise((resolve, reject) => {
+                    cloudinary.uploader.destroy(
+                        oldPublic_id, { resource_type: 'image' }, (error, result) => {
+                            if (error) {
+                                return reject(error)
+                            }
+                            resolve(result)
+                        }
+                    )
+                })
+                user.avatar = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/v${result.version}/${newPublicId}.${result.format}`
+                userController.save(user)
+
+
+                if (deleteResult.result === 'not found') {
+                    throw new Error('Previous image not found, deletion aborted')
+                }
+                if (deleteResult.result === 'ok') {
+                    console.log("proccess complete");
+                    return { success: true, user, msg: "Image update complete" }
+                }
+            }
+            user.avatar = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/v${result.version}/${newPublicId}.${result.format}`
+            userController.save(user)
+            return { success: true, user, msg: "Image update complete" }
+        }
 
 
     } catch (error) {
-        console.error(error);
+        if (error === 'Previous image not found, deletion aborted') {
+            return { success: false, msg: "Previous image not deleted", user }
+        } else {
+            console.error(error);
+        }
     }
 }
 

@@ -22,19 +22,21 @@ router.post('/register', upload.single('file'), async (req, res) => {
                 )
                 uploadStream.end(file.buffer)
             })
-            console.log('File uploaded successfully:', result);
+
             avatar = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/v${result.version}/${result.public_id}.${result.format}`
         }
 
         const email = req.body.email
         const checkEmail = await userService.checkEmail(email)
-        console.log(checkEmail);
+
         if (checkEmail === 'Email exists') {
             res.send({ success: 'Email exists' })
         }
 
-        await userService.registerUser({ body: req.body, avatar })
-        res.send({ success: true })
+        const result = await userService.registerUser({ body: req.body, avatar })
+        if (result) {
+            res.send({ success: true })
+        }
     } catch (error) {
         console.error(error);
     }
@@ -48,7 +50,10 @@ router.put('/editAvatar', tokenCheck, upload.single('file'), async (req, res) =>
         if (file) {
             const userId = req.userId
             const result = await userService.editAvatar(userId, file)
-            res.send({ success: true })
+            const user = result.user
+            const success = result.success
+            const msg = result.msg
+            res.send({ success, user, msg })
         }
     } catch (error) {
         console.error(error)
@@ -58,6 +63,7 @@ router.put('/editAvatar', tokenCheck, upload.single('file'), async (req, res) =>
 
 router.post('/login', async (req, res) => {
     try {
+
         const { token, user } = await userService.loginUser(req.body)
         console.log(token);
         console.log(user);

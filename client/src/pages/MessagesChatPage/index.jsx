@@ -173,7 +173,7 @@ export default function MessagesChatPage() {
                     <ConversationsTitle titleText={chatSubject} />
                     <div className={styles.messages}>
                         {messagesList.map((data, index) => {
-                            return <React.Fragment key={index}><OpenedMessage userId={user._id} senderId={data.senderId} avatarImg={data.avatar} userName={data.sender} msg={data.content} hour={data.hour} date={data.date} />
+                            return <React.Fragment key={index}><OpenedMessage userId={user._id} userAvatar={user.avatar} senderId={data.senderId} avatarImg={data.avatar} userName={data.sender} msg={data.content} hour={data.hour} date={data.date} />
                                 <hr className={styles.msgsHr} />
                             </React.Fragment>
 

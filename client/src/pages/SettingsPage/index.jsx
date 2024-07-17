@@ -5,10 +5,11 @@ import apiCall from '../../Helpers/api'
 import apiToastCall from '../../Helpers/apiToast'
 import MessageButton from '../../components/MessageButton'
 import { IoMdCheckmark } from "react-icons/io";
+import defaultImg from '../../assets/defaultPlaceholder.webp'
 export default function SettingsPage() {
     const [file, setFile] = useState()
     const [preview, setPreview] = useState()
-    const { user } = useUser()
+    const { user, setUser } = useUser()
 
     const editImgRef = useRef(null)
 
@@ -42,6 +43,9 @@ export default function SettingsPage() {
                 success: 'Image Updated!',
             })
             console.log(res);
+            const newUserInfo = res.data.user
+            setUser(newUserInfo)
+            setPreview(null)
         } catch (error) {
             console.error(error);
         }
@@ -56,7 +60,7 @@ export default function SettingsPage() {
                 <input type="file" name='file' accept='image/*' ref={editImgRef} onChange={handleChange} style={{ display: 'none' }} />
                 <div className={styles.avatarAlign}>
                     <button className={styles.avatarContainer} onClick={onEditClick}>
-                        <img className={styles.avatar} src={preview ? preview : user.avatar} alt="user img" />
+                        <img className={styles.avatar} src={preview ? preview : user.avatar ? user.avatar : defaultImg} alt="user img" />
                         <div className={styles.avatarOverlay}>Edit</div>
                     </button>
                     <div className={`${styles.btnAnimation} ${preview ? styles.active : ''}`}>

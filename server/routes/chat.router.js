@@ -35,7 +35,7 @@ router.post('/create-send', async (req, res) => {
         const userId = req.user
 
         const data = req.body
-        // console.log(data);
+
 
         const result = await chatService.createSendChat(data, userId)
         console.log("IM THE RESULT", result);

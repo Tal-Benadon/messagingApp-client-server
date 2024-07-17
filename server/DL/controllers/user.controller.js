@@ -6,7 +6,6 @@ async function create(data) {
 }
 
 async function read(filter = {}, populate = false, select = '') {
-    console.log("fromController", select);
     let query = userModel.find(filter)
     if (populate)
         query = query.populate(populate)
@@ -62,7 +61,6 @@ async function readByFlags({ id, flags = [], populate = {}, searchBy, page = 1 }
         const to = from + 10
         data.chats = data.chats.slice(from, to)
     }
-    // console.log(data);
     return { chats: data.chats, pages }
 }
 

@@ -63,7 +63,7 @@ export default function NewMessagePage() {
                         draftData.members.forEach(member => {
                             console.log(member);
                             if (member === user._id) return //If Id is of the user, dont search it
-
+                            console.log({ dataBaseMails });
                             const dataBaseUser = dataBaseMails.find(data => data._id === member)
                             console.log(dataBaseUser);
                             draftMailList.push(dataBaseUser.email)
@@ -100,31 +100,32 @@ export default function NewMessagePage() {
         const result = await apiToastCall({ method: 'PUT', url: `chat/update-draft`, body: { ...newChat, draftId }, pending: 'Updating Draft...', success: 'Draft Updated', error: "An error occured while creating" })
     }
 
-    const saveDraft = () => {
-        if (hasInteracted) {
-            if (draftId) {
-                updateDraft()
-                setHasInteracted(false)
-            } else {
-                createDraft()
-                setHasInteracted(false)
-            }
-        }
-    }
+    // const saveDraft = () => {
+    //     if (hasInteracted) {
+    //         if (draftId) {
+    //             updateDraft()
+    //             setHasInteracted(false)
+    //         } else {
+    //             createDraft()
+    //             setHasInteracted(false)
+    //         }
+    //     }
+    // }
 
-    const debouncedSaveDraft = useMemo(() => debounce(saveDraft, 3000), [saveDraft, hasInteracted]);
+    // const debouncedSaveDraft = useMemo(() => debounce(saveDraft, 3000), [saveDraft, hasInteracted]);
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        debouncedSaveDraft()
-        return () => {
-            debouncedSaveDraft.cancel()
-        }
+    //     debouncedSaveDraft()
+    //     return () => {
+    //         debouncedSaveDraft.cancel()
+    //     }
 
-    }, [debouncedSaveDraft])
+    // }, [debouncedSaveDraft])
 
     useEffect(() => {
         if (data) {
+
             const newData = data.filter(emailObj => emailObj._id !== user._id)
             setDataBaseMails(newData)
         }
@@ -144,10 +145,10 @@ export default function NewMessagePage() {
             members: membersIdList,
             msg: {
                 content: message,
-                date: new Date(), //TODO - move newDate to server
+                date: new Date(),
                 from: user._id
             },
-            lastDate: new Date() //TODO - move newDate to server
+            lastDate: new Date()
         }
         return newChat
     }
@@ -230,7 +231,7 @@ export default function NewMessagePage() {
         if (name === 'subject') setSubject(value)
         if (name === 'to') setEmail(value)
         if (name === 'message') setMessage(value)
-        debouncedSaveDraft()
+        // debouncedSaveDraft()
     }
 
     const handleDeleteDraft = async (draftId) => {

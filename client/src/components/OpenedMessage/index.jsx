@@ -3,8 +3,8 @@ import styles from './styles.module.css'
 import defaultImg from '../../assets/defaultImg.jpg'
 import { TiArrowBack } from "react-icons/ti";
 
-export default function OpenedMessage({ userId, senderId, avatarImg, userName, date, hour, msg }) {
-    //userId comes from context?
+export default function OpenedMessage({ userAvatar, userId, senderId, avatarImg, userName, date, hour, msg }) {
+
     const [isOpen, setIsOpen] = useState()
 
     const handleOnclick = () => {
@@ -20,9 +20,14 @@ export default function OpenedMessage({ userId, senderId, avatarImg, userName, d
     return (
         <div className={styles.openedMessageContainer} >
             <button className={styles.openedMessageHeader} onClick={() => handleOnclick()}>
-                {IsUser() ? <div className='avatarImg'>
-                    <TiArrowBack />
-                </div> :
+                {IsUser() ?
+
+                    <div className='avatarImg'>
+                        <TiArrowBack />
+                        <img src={userAvatar} className='avatarImg' alt="avatar image" />
+                    </div>
+
+                    :
                     <img src={avatarImg} className='avatarImg' alt="avatar image" />
 
                 }

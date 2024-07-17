@@ -64,7 +64,7 @@ export default function InboxMessagesList() {
         setPage(prev => prev + 1)
 
         const response = await apiCall({ method: "GET", url: `chat/inbox/${chatType}/${page + 1}` })
-        console.log(response);
+        console.log("clicked", response);
         const chatList = response.chats.map(chat => {
             return {
                 namesTitle: messageFormatting(chat.chat.members, user._id),
